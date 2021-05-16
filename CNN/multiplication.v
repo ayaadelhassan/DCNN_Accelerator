@@ -1,7 +1,9 @@
 module multiplication (A, B, Z);
 	input signed [15:0] A, B;
-	output signed [31:0] Z;
+	output signed [15:0] Z;
+	wire signed [31:0] multOut;
 	
-	assign Z = A * B;
+	assign multOut = A * B;
+	fixed_point_modification fp(multOut, Z);
 	
 endmodule
