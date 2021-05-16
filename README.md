@@ -1,2 +1,2 @@
 # DCNN_Accelerator
-A DCNN accelator operates on grayscale images
+A DCNN accelator that operates on grayscale images
