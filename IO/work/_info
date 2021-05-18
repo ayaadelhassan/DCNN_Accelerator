@@ -1,0 +1,31 @@
+m255
+K4
+z2
+13
+!s112 1.1
+!i10d 8192
+!i10e 25
+!i10f 100
+cModel Technology
+dD:/college/cmp3/second/vlsi/req
+vmemory
+!s110 1621363112
+!i10b 1
+!s100 `VDjlWOADE^?KIm`2iz?h1
+I5VaMZSN1TIlfTaMT;1KNi3
+VDg1SIo80bB@j0V0VzS_@n1
+dD:/college/cmp3/second/vlsi/DCNN_Accelerator/IO
+w1621361295
+8D:\college\cmp3\second\vlsi\DCNN_Accelerator\IO\ram.v
+FD:\college\cmp3\second\vlsi\DCNN_Accelerator\IO\ram.v
+L0 2
+OV;L;10.5b;63
+r1
+!s85 0
+31
+!s108 1621363112.000000
+!s107 D:\college\cmp3\second\vlsi\DCNN_Accelerator\IO\ram.v|
+!s90 -reportprogress|300|-work|work|-stats=none|D:\college\cmp3\second\vlsi\DCNN_Accelerator\IO\ram.v|
+!i113 1
+o-work work
+tCvgOpt 0
