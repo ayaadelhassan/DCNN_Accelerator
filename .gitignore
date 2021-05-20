@@ -8,6 +8,13 @@
 *.jpg
 *.html
 *.bsf
+_info
+*.qdb
+*.qpg
+*.qtl
+_vmake
+*.mpf
+
 
 # ignore simulation output of ModelSim
 wlf*
