@@ -10,7 +10,7 @@ module fixed_point_modification (result, modifiedOut);
 	always @ (*)
 	begin
 		integerPart = result[n-1:n-m];   // [31:22] for multiplication, [16:11] for addition 
-		if (integerPart > 5'b01111) begin
+		if (integerPart > 15) begin
 			$display("GREATER");
 			modifiedOut[15:11] = 15;
 			modifiedOut[10:0] = {11{1'b1}};
