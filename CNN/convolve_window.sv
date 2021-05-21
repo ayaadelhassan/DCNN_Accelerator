@@ -1,11 +1,9 @@
 module convolve_window(window, filter, value);
 	input signed [15:0] window [0:4][0:4];
-	input signed [15:0] filter [0:4][0:4];
-	output value; 
-	reg signed [15:0] value;
+	input signed [15:0] filter [0:4][0:4]; 
+	output signed [15:0] value;
 	
 	wire signed [15:0] temp [0:24];
-	
 
 	genvar i,j;
 	generate 
@@ -20,12 +18,7 @@ module convolve_window(window, filter, value);
 	
 	endgenerate
 
-	always @(*)
-	begin
-		value = 0;
-		for (integer i=0; i<25; i++)
-		begin
-          		value = value + temp[i];
-		end
-	end
+
+	summation #(.n(25)) sm(temp, value);
+
 endmodule
