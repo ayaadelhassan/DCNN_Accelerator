@@ -4,6 +4,6 @@ module multiplication (A, B, Z);
 	wire signed [31:0] multOut;
 	
 	assign multOut = A * B;
-	fixed_point_modification fp(multOut, Z);
+	fixed_point_modification #(.n(32), .m(10)) fp(multOut, Z);
 	
 endmodule
