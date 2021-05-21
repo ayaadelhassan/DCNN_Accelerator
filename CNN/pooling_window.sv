@@ -1,21 +1,15 @@
 module pool_window(window,pooledOut);
-	input signed [15:0] window [0:1][0:1];
+	input signed [15:0] window [0:3];
 	output pooledOut;
-	reg signed [15:0] pooledOut = "0000000000000000"; 
-	reg signed quarter [15:0] = "0000001000000000"; // quarter 0.25
-	wire signed [15:0] temp [0:3];
-	genvar i,j;
-	generate 
+	reg signed [15:0] pooledOut; 
 
-	for (i=0; i<2; i++)
-	begin
-      		for (j=0; j<2; j++)
+	integer i;
+	always @* begin 
+		pooledOut = 0;
+		for (i=0; i<4; i++)
 		begin
-          		multiplication mp(window[i][j], quarter, temp[i * 2 + j]);
-			add ad(pooledOut,temp[i*2+j],pooledOut);
+      			pooledOut = pooledOut + (window[i] >>> 2);
 		end
 	end
-	
-	endgenerate
 
 endmodule
