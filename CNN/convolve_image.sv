@@ -21,7 +21,9 @@ module convolve_image(image, filter, convolved_image);
 			assign window[j+(n-4)*i][15:19] = image[j+(n*(i+3)):j+(n*(i+3))+4];
 			assign window[j+(n-4)*i][20:24] = image[j+(n*(i+4)):j+(n*(i+4))+4];
 
-          		convolve_window cw(window[j+(n-4)*i], filter, convolved_image[j+(n-4)*i]);
+          	convolve_window cw(window[j+(n-4)*i], filter, convolved_image[j+(n-4)*i]);
+
+
 		end
 	end
 	
