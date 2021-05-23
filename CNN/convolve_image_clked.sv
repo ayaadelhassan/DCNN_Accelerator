@@ -1,16 +1,18 @@
-module convolve_image_clked(image, filter, convolved, clk, reset ,enable, done);
+module convolve_image_clked(clk, reset ,enable, imgSize, image, filterSize, filter, convolved, done);
 	
-	parameter n = 10;
+	localparam n = 32;
 
 	input signed [15:0] image [0:n*n-1];
 	input signed [15:0] filter [0:24];
-    	input clk , reset, enable; 
+	input [15:0] imgSize;
+	input [15:0] filterSize;
+    	input clk , reset, enable;
 	output signed [15:0] convolved;
    	output done; 
     	reg done; 
 	reg signed [15:0] window [0:24];
     	
-	convolve_window cw(window, filter, convolved);
+	convolve_window cw(window, filterSize, filter, convolved);
     
 	integer i,j,k,f;
     	always @(posedge clk, reset) 
@@ -25,21 +27,21 @@ module convolve_image_clked(image, filter, convolved, clk, reset ,enable, done);
         	end if(enable) begin
 			f = 0;
 			
-			for(integer x=i;x<i+5;x++) begin
-				for(integer y=0;y<5;y++) begin
-					window[f] = image[j+(n*x)+y];
+			for(integer x=i;x<i+filterSize;x++) begin
+				for(integer y=0;y<filterSize;y++) begin
+					window[f] = image[j+(imgSize*x)+y];
 					f = f + 1;
 				end
 			end
         		            
             		j = j + 1; 
 			
-			if(j >= n - 4) begin
+			if(j >= imgSize - ((filterSize>>1) << 1)) begin
 				i = i + 1;
 				j = 0;
 			end
 
-			if(i >= n - 4) begin
+			if(i >= imgSize - ((filterSize>>1) << 1)) begin
 				done = 1;	
 			end
 		end 
