@@ -29,19 +29,19 @@ module convolve_image_clked(clk, reset ,enable, imgSize, image, filterSize, filt
 			
 			for(integer x=i;x<i+filterSize;x++) begin
 				for(integer y=0;y<filterSize;y++) begin
-					window[f] = image[j+(n*x)+y];
+					window[f] = image[j+(imgSize*x)+y];
 					f = f + 1;
 				end
 			end
         		            
             		j = j + 1; 
 			
-			if(j >= n - ((filterSize>>1) << 1)) begin
+			if(j >= imgSize - ((filterSize>>1) << 1)) begin
 				i = i + 1;
 				j = 0;
 			end
 
-			if(i >= n - 4) begin
+			if(i >= imgSize - ((filterSize>>1) << 1)) begin
 				done = 1;	
 			end
 		end 
