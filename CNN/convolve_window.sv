@@ -1,4 +1,4 @@
-module convolve_window(window, filter, filterSize, value);
+module convolve_window(window, filterSize, filter, value);
 	input signed [15:0] window [0:24];
 	input signed [15:0] filter [0:24];
 	input [15:0] filterSize;

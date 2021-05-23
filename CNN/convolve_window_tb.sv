@@ -9,8 +9,8 @@ module convolve_window_tb;
 
     	localparam period = 100;
 	
-	convolve_window cv1(window, filter, 16'd5, value);
-	convolve_window cv3(window3, filter3, 16'd3, value3);
+	convolve_window cv1(window, 16'd5, filter, value);
+	convolve_window cv3(window3, 16'd3, filter3, value3);
 
 	initial
 	begin
