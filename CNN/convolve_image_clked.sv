@@ -41,7 +41,7 @@ module convolve_image_clked(clk, reset ,enable, imgSize, image, filterSize, filt
 				j = 0;
 			end
 
-			if(i >= n - 4) begin
+			if(i >= n - ((filterSize>>1) << 1)) begin
 				done = 1;	
 			end
 		end 
