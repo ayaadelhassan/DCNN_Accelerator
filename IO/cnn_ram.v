@@ -1,6 +1,6 @@
 // CNN ram 
 module CNNmemory(
-    output [239999:0] data_out, //150 * 16  bit 
+    output [399:0] data_out, //25 * 16  bit 
     input [15:0] address,
     input [15:0] data_in, 
     input write_enable,
@@ -17,7 +17,7 @@ module CNNmemory(
 	
 	genvar i;
  generate
-    for (i=0; i<150; i=i+1) 
+    for (i=0; i<25; i=i+1) 
     begin:loop1
 	assign data_out[(i+1)*16-1:i*16] = CNNmemory[address+i];
 	end
