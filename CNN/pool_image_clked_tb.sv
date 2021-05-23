@@ -1,28 +1,33 @@
 module pool_image_clked_tb;
-    reg signed [15:0] image [0:15];
+    reg signed [15:0] image [0:1023];
     reg signed [15:0] pooledOut;
-
+	reg [15:0] imgSize;
+	reg [15:0] windowSize;
     reg clk, reset, enable, done;
     localparam period = 100;
 
-    pool_image_clked #(.n(4)) pl(image, pooledOut, clk, reset, enable, done);
+    pool_image_clked pl(clk, reset, enable, imgSize, image, windowSize, pooledOut, done);
 
 initial begin
   $display($time, " << Starting the Simulation >>");
+
+	for (integer i=0; i<1024; i++)
+	begin
+	       	image[i] = 16'b0000010000000000;
+	end
+	image[3] = 16'b1010000000000000;
+
     reset = 1'b1;
 	enable = 1'b1;
     clk = 0;
-    #50 reset = 1'b0;
+    #100 reset = 1'b0;
 end
 
-always #period clk=~clk;
+always #(period/2) clk=~clk;
 
     initial begin
-	image = { 16'b0100010000000000, 16'b0000010100000000, 16'b0100100000000000, 16'b0010110000000000, 
-			16'b1100010000000000, 16'b0000010000000000, 16'b1111110011000000, 16'b1111000000000000,
-			16'b0101000000000000, 16'b0101100000000000, 16'b1011000000000000, 16'b1010100010000000, 
-			16'b0000000000000000, 16'b0110100000000011, 16'b1011000000000000, 16'b1001110000000000
-		};
+	imgSize = 10;
+	windowSize = 5;
     end
 
 endmodule

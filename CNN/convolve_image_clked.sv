@@ -15,7 +15,7 @@ module convolve_image_clked(clk, reset ,enable, imgSize, image, filterSize, filt
 	convolve_window cw(window, filterSize, filter, convolved);
     
 	integer i,j,k,f;
-    	always @(posedge clk, reset) 
+    	always @(posedge clk) 
 	begin
         	if (reset) begin
         	    	i  <= 0; 
@@ -24,7 +24,7 @@ module convolve_image_clked(clk, reset ,enable, imgSize, image, filterSize, filt
 			for(k=0;k<25;k=k+1) begin
         	    		window[k] <= 0;
 			end
-        	end if(enable) begin
+        	end else if(enable) begin
 			f = 0;
 			
 			for(integer x=i;x<i+filterSize;x++) begin
