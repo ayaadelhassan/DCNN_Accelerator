@@ -1,7 +1,8 @@
-module summation(array, sum);
+module summation(array, filterSize, sum);
 	parameter n = 25;	//array size
 
 	input signed [15:0] array [0:n-1];
+	input [15:0] filterSize;
 	wire signed [15:0] addOutTemp [0:n-2];
 	output signed [15:0] sum;
 
@@ -17,6 +18,6 @@ module summation(array, sum);
 	
 	endgenerate
 
-	assign sum = addOutTemp[n-2];
+	assign sum = addOutTemp[filterSize*filterSize-2];
 
 endmodule

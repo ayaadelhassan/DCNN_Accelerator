@@ -1,5 +1,5 @@
 module LoadImage (clk, enable, imgSize, address, initialAddr, image ,done, out );
-    localparam MEM_ADDR_SIZE = 32;
+    localparam MEM_ADDR_SIZE = 20;
     localparam BLOCK_SIZE = 150;
     localparam DATA_SIZE = 16;
     localparam IMG_SIZE_WIDTH = 6;
@@ -9,26 +9,39 @@ module LoadImage (clk, enable, imgSize, address, initialAddr, image ,done, out )
     output reg [MEM_ADDR_SIZE - 1 : 0] address;
     input  [MEM_ADDR_SIZE - 1 : 0] initialAddr;
     input [DATA_SIZE-1:0] image [0:BLOCK_SIZE-1];
-    reg [DATA_SIZE-1:0] iterations;
-    reg [2:0] counter;
-
-    output reg [DATA_SIZE -1: 0] out[0:1023]; 
-
+    wire [DATA_SIZE-1:0] iterations;
+    integer counter;
+    integer k; 
+    integer operand; 
+    output out;
+    reg [DATA_SIZE -1: 0] out[0:1023]; 
     initial begin
         counter = 0;  
-        iterations = (imgSize * imgSize / BLOCK_SIZE) + 1;
-        address = initialAddr; 
+	    done = 0; 
+        k = 0; 
+        operand = 150; 
     end
+    
+    assign iterations = (imgSize * imgSize / 10'd150) + 1;
+    
     integer  i;
-    always @(posedge clk) begin
+    always @(posedge clk)begin
+	 if(counter == 0)begin
+           address = initialAddr;
+        end
+    end 
+
+    always @(negedge clk) begin
         if(counter < iterations && done == 0) begin
-            for(i = (counter * BLOCK_SIZE); i < (counter * BLOCK_SIZE) + BLOCK_SIZE; i = i +1 )begin
-                out[i] = image[i - counter * BLOCK_SIZE];
+            for(i = 0 ; i < 150 ; i = i +1 )begin
+               	k = counter *operand;
+                k = k + i;  
+                out[k] = image[i];
             end
-	    counter =  counter + 1; 
-            address = address + BLOCK_SIZE; 
+	counter =  counter + 1; 
+        address = address + 10'd150;
         end else begin
-            done = 1;
+           done = 1;
         end
     end
 endmodule

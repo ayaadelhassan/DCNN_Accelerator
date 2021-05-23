@@ -21,9 +21,11 @@ initial begin
 end
 
 always @(posedge clk) begin
-    if (enable) begin
+
+    if (enable ==1) begin
         if (RW) begin //read 1
             outputData = ram[0:BLOCK_SIZE-1]; 
+	  
         end
         else begin //write 0
             ram[address] = inputDATA; 
