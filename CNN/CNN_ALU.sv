@@ -1,22 +1,35 @@
 
-module CNN_ALU (clk, enable, reset, initialAddr, address, dmaOut ,imgSize, dmaEnable,opDone,done ,convDone,poolDone );
+module CNN_ALU (clk, enable, reset, initialAddr, 
+address, dmaOut ,imgSize, filterSize, noOfFilters, 
+prevImagesCount, dmaEnable, opDone, done, poolEnable, convEnable , convORpoolDone ,imgAddr );
+
     localparam MEM_ADDR_SIZE = 20;
     localparam BLOCK_SIZE = 150;
     localparam DATA_SIZE = 16;
-    localparam  noOfLayerAddr = 1;
+    localparam noOfLayerAddr = 1;
+    localparam IMAGE_ADDR = 0;
 
-    input clk,enable, reset,opDone; 
+    input clk,enable, reset,opDone ,convORpoolDone; 
     input  [MEM_ADDR_SIZE - 1 : 0] initialAddr;
     input [DATA_SIZE-1:0] dmaOut [0:BLOCK_SIZE-1]; 
-    output reg [MEM_ADDR_SIZE - 1 : 0] address;
+    
+    output address; // address for layer info 
     output loadImageEnable, dmaEnable;
-    output [5:0] imgSize; 
+    output convEnable,poolEnable;
+    output imgSize; 
+    output imgAddr; // for conv or pool layer to load from 
+    output filterSize; 
+    output noOfFilters; 
+    output prevImagesCount; 
     output done; 
-    output reg convEnable,poolEnable;
-    reg loadImageEnable, dmaEnable,convEnable,poolEnable; 
-    reg prevImagesCount, prevFiltersCount; 
+
+    reg [MEM_ADDR_SIZE - 1 : 0] address; 
+    reg [MEM_ADDR_SIZE - 1 : 0] imgAddr; 
+    reg dmaEnable,convEnable,poolEnable; 
+    reg [DATA_SIZE-1:0] prevImagesCount, prevFiltersCount; 
     reg [DATA_SIZE-1:0] noOfLayers; 
     reg [DATA_SIZE-1:0] layerType; 
+    reg [DATA_SIZE-1:0] imgSize; 
     reg [DATA_SIZE-1:0] filterSize;  
     reg [DATA_SIZE-1:0] noOfFilters;  
     reg [DATA_SIZE-1:0] filter [0:24];//max size of filter
@@ -29,7 +42,6 @@ module CNN_ALU (clk, enable, reset, initialAddr, address, dmaOut ,imgSize, dmaEn
     reg readFilterSignal; 
     reg readImageSignal;
     reg saveImageSignal; 
-    
     reg doneReadNoOfLayersSignal;    
     reg doneReadLayerDataSignal;    
     reg doneReadFilterSignal; 
@@ -51,6 +63,7 @@ module CNN_ALU (clk, enable, reset, initialAddr, address, dmaOut ,imgSize, dmaEn
         convDone = 0; 
         poolDone = 0; 
         counter = 0;
+        imgSize = 32; 
         filterCounter = 0;  
         prevImagesCount = 1;
         prevFiltersCount = 1; 
@@ -70,10 +83,26 @@ module CNN_ALU (clk, enable, reset, initialAddr, address, dmaOut ,imgSize, dmaEn
 
     intger i; 
     always @(posedge clk) begin
-        opDone = opDone || convDone || poolDone; 
+        opDone = opDone ||  convORpoolDone; 
+        
+        if(convORpoolDone) begin
+            imgAddr = prevImagesCount * imgSize * imgSize; // address of first intermidiat result for next layer    
+            if(layerType)begin //conv 
+                 address = address + (noOfFilters * filterSize * filterSize); 
+                 prevImagesCount = noOfFilters / prevImagesCount; 
+                 imgSize  = imgSize - (2 * (filterSize / 2));   
+            end 
+            else begin
+                 imgSize = imgSize / 2;
+            end
+            layerCounter = layerCounter + 1; 
+            doneReadLayerDataSignal = 0;
+        end
+
         if (opDone)begin // there is an operation done 
             opDone = 0;
-
+            poolEnable = 0; 
+            convEnable = 0; 
             if(readNoOfLayersSignal)begin // got number of layers 
                 noOfLayers = dmaOut[0];
                 layerCounter = 0; 
@@ -87,16 +116,7 @@ module CNN_ALU (clk, enable, reset, initialAddr, address, dmaOut ,imgSize, dmaEn
                noOfFilters = dmaOut[2]; 
                doneReadLayerDataSignal = 1;  
             end
-            if(readFilterSignal)begin
-                dmaEnable =0; 
-                for ( i= 0 ;i<filterSize ;i = i + 1 ) begin
-                    filter[i] = dmaOut[i]; 
-                end
-                //apply conv here 
-               convEnable = 1; 
-               convDone = 0;
-               filterCounter = filterCounter + 1; 
-            end
+
             if (layerCounter < noOfLayers)begin
                 if(doneReadLayerDataSignal == 0) // if type not loaded the load it
                 begin
@@ -104,33 +124,17 @@ module CNN_ALU (clk, enable, reset, initialAddr, address, dmaOut ,imgSize, dmaEn
                     dmaEnable = 1;
                     //raed = 1;  
                     readLayerDataSignal = 1; 
-                    convDone = 1;
-                end   
-                else if(layerType == 1 /* value is dmmmy */&& convDone == 1 ) begin // if data are loaded  
-                    
-                    //filtersPerImage = noOfFilters / prevImagesCount; 
-                    // keep data loaded
-                    convEnable = 1;
-                    if(filterCounter == 0)begin
-                        address = address + 3;
-                    end else begin
-                        address = address + (filterSize * filterSize); 
-                    end
-                    dmaEnable = 1; // might make it another dma change only enable and returned value 
-                    readFilterSignal = 1; 
-                end 
-                else if(layerType == 0) begin 
-                    poolEnable = 1; 
-                    layerCounter = layerCounter + 1; 
-                    doneReadLayerDataSignal =0;
-                    
-                end else if (filterCounter == noOfFilters)begin
-                    readFilterSignal = 0; // filters sinished
-                    layerCounter = layerCounter + 1; 
-                    doneReadLayerDataSignal =0;
-                    prevFiltersCount = noOfFilters; 
-                end
+                end  
+                else begin 
+                    convEnable = layerType;
+                    poolEnable = ! layerType;
+                    if(convEnable)
+                        address = address + 3; 
+                    else 
+                        address = address + 1; 
 
+                    // out to pool or conv prevImagesCount, address, noOfFilters, filter-size , image-size.
+                end 
             end else begin
                 done = 1;
                 opDone = 0;  
