@@ -10,7 +10,7 @@ module convolution_layer_tb;
 
     	//convolution_layer conv(clk, enable, reset, )
 	DMA dma(.clk(clk), .enable(dmaEnable), .RW(rw), .address(address), .inputDATA(inputData), .outputData(dmaOut));
-        load_block loadB (.clk(clk), .enable(loadEnable), .size(blockSize), .address(initAddr), .dmaOut(dmaOut), .out(loadOut) ,.done(loadDone));
+        load_block loadB (.clk(clk), .enable(loadEnable), .size(blockSize), .address(initAddr), .dmaAddr(address), .dmaOut(dmaOut), .out(loadOut) ,.done(loadDone));
 
 
 	initial begin
@@ -18,11 +18,14 @@ module convolution_layer_tb;
 		clk = 0;
 		dmaEnable = 1;
 		rw = 1;
-		address = 0;
 		inputData = 0;
-		loadEnable = 1;
 		blockSize = 6;
 		initAddr = 0;
+		loadEnable = 0;
+		
+		#period
+		
+		loadEnable = 1;
 	end
 
 	always #(period/2) clk=~clk;

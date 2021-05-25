@@ -15,7 +15,7 @@ reg [DATA_WIDTH -1 : 0]ram [0:(BLOCK_SIZE * 100)];
 // RAM ram(clk, enable,address,RW,ramIn,ramOut);
 integer i;
 initial begin
-    for (i = 0; i < BLOCK_SIZE * 100; i = i + 1 ) begin
+    for (i = 0; i < BLOCK_SIZE; i = i + 1 ) begin
         ram[i] = i; 
     end
 end
