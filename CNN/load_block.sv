@@ -20,30 +20,32 @@ module load_block (clk, enable, size, address, dmaOut, dmaAddr, out, done);
         counter = 0;  
 	done = 0; 
         k = 0; 
-        operand = BLOCK_SIZE;
-	for(integer j = 0; j<1024; j++) out[j] = 0;
+        operand = 25;
     end
     
     assign iterations = (size * size / 10'd25) + 1;
     
     integer  i;
-    always @(negedge clk)begin
-	 if(counter == 0)begin
-           dmaAddr = address;
-        end
-    end 
 
     always @(posedge clk) begin
-        if(counter < iterations && done == 0) begin
-            for(i = 0 ; i < BLOCK_SIZE ; i = i +1 )begin
-               	k = counter*operand;
-                k = k + i;  
-                out[k] = dmaOut[i];
-            end
-	counter =  counter + 1; 
-        dmaAddr = dmaAddr + 10'd25;
-        end else begin
-           done = 1;
-        end
+	if(enable) begin
+        	if(counter == 0)begin
+           		dmaAddr = address;
+        	end
+		
+		if(counter < iterations && done == 0) begin
+        		for(i = 0 ; i < 25 ; i = i +1 )begin
+        		       	k = counter*operand;
+        		        k = k + i;  
+        		        out[k] = dmaOut[i];
+       			end
+			counter =  counter + 1; 
+        		dmaAddr = dmaAddr + 10'd25;
+        	end
+
+		if(counter == iterations) begin
+			done = 1;
+		end
+	end
     end
 endmodule
