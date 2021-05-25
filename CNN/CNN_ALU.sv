@@ -1,19 +1,19 @@
 
-module CNN_ALU (clk, enable, reset, initialAddr, address, dmaOut ,imgSize, loadImageEnable, dmaEnable,opDone,done );
+module CNN_ALU (clk, enable, reset, initialAddr, address, dmaOut ,imgSize, dmaEnable,opDone,done ,convDone,poolDone );
     localparam MEM_ADDR_SIZE = 20;
     localparam BLOCK_SIZE = 150;
     localparam DATA_SIZE = 16;
     localparam  noOfLayerAddr = 1;
 
     input clk,enable, reset,opDone; 
-    output reg [MEM_ADDR_SIZE - 1 : 0] address;
     input  [MEM_ADDR_SIZE - 1 : 0] initialAddr;
     input [DATA_SIZE-1:0] dmaOut [0:BLOCK_SIZE-1]; 
+    output reg [MEM_ADDR_SIZE - 1 : 0] address;
     output loadImageEnable, dmaEnable;
-    reg convEnable,poolEnable;
-    reg loadImageEnable, dmaEnable,convEnable,poolEnable; 
     output [5:0] imgSize; 
     output done; 
+    output reg convEnable,poolEnable;
+    reg loadImageEnable, dmaEnable,convEnable,poolEnable; 
     reg prevImagesCount, prevFiltersCount; 
     reg [DATA_SIZE-1:0] noOfLayers; 
     reg [DATA_SIZE-1:0] layerType; 
@@ -36,19 +36,20 @@ module CNN_ALU (clk, enable, reset, initialAddr, address, dmaOut ,imgSize, loadI
     reg doneReadImageSignal;
     reg donesaveImageSignal; 
 
-    
     integer  counter;
     integer filterCounter; 
     integer layerCounter;
 
-    initial begin
+    always @(posedge clk) begin
+        if(reset)begin
         //stage 1 load # of layers
-        convDone = 0; 
-        poolDone = 0; 
-        opDone = 0; 
         dmaEnable = 1;
         address = noOfLayerAddr; 
-        readNoOfLayersSignal = 1; 
+        readNoOfLayersSignal = 1;
+        // initial signals 
+        opDone = 0; 
+        convDone = 0; 
+        poolDone = 0; 
         counter = 0;
         filterCounter = 0;  
         prevImagesCount = 1;
@@ -63,12 +64,13 @@ module CNN_ALU (clk, enable, reset, initialAddr, address, dmaOut ,imgSize, loadI
         doneReadFilterSignal = 0; 
         doneReadImageSignal = 0;
         donesaveImageSignal = 0; 
-    end
+        end
 
+    end
 
     intger i; 
     always @(posedge clk) begin
-        opDone = opeDone || convDone || poolDone; 
+        opDone = opDone || convDone || poolDone; 
         if (opDone)begin // there is an operation done 
             opDone = 0;
 
@@ -100,16 +102,17 @@ module CNN_ALU (clk, enable, reset, initialAddr, address, dmaOut ,imgSize, loadI
                 begin
                     address = address + 1; 
                     dmaEnable = 1;
-                    raed = 1;  
+                    //raed = 1;  
                     readLayerDataSignal = 1; 
                     convDone = 1;
                 end   
-                else if(layerType == 1 /* value is dmmmy */&&  filterCounter < noOfFilters && convDone == 1 ) begin // if data are loaded  
+                else if(layerType == 1 /* value is dmmmy */&& convDone == 1 ) begin // if data are loaded  
                     
-                    filtersPerImage = noOfFilters / prevImagesCount; 
+                    //filtersPerImage = noOfFilters / prevImagesCount; 
                     // keep data loaded
+                    convEnable = 1;
                     if(filterCounter == 0)begin
-                        address = address + 2;
+                        address = address + 3;
                     end else begin
                         address = address + (filterSize * filterSize); 
                     end
@@ -127,7 +130,6 @@ module CNN_ALU (clk, enable, reset, initialAddr, address, dmaOut ,imgSize, loadI
                     doneReadLayerDataSignal =0;
                     prevFiltersCount = noOfFilters; 
                 end
-
 
             end else begin
                 done = 1;
