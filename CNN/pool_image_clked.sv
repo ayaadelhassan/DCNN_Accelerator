@@ -1,14 +1,15 @@
-module pool_image_clked (image, pooledOut, clk, reset, enable, done);
+module pool_image_clked (clk, reset, enable, imgSize, image, windowSize, pooledOut, done);
 
-
-    parameter n = 4;
-
+	localparam n = 32;
+	
 	input signed [15:0] image [0:n*n-1];
-    input clk, reset, enable;
+	input [15:0] imgSize;
+	input [15:0] windowSize;
+	input clk, reset, enable;
 	output signed [15:0] pooledOut ;
-	reg signed [15:0] window [0:3];
-    output done ;
-    reg done;
+	reg signed [15:0] window [0:24];
+	output done ;
+	reg done;
 
 //     initial
 // 	begin
@@ -27,30 +28,37 @@ module pool_image_clked (image, pooledOut, clk, reset, enable, done);
 // 	end
 
 
-    pool_window pw(window,pooledOut);
-    integer i,j,x,y,f;
-    always @(posedge clk, reset) begin
+    pool_window pw(windowSize, window, pooledOut);
+    integer i,j,x,y,f,k;
+    always @(posedge clk) begin
         if (reset) begin
-            i <= 0 ;
-            j <= 0 ;
-            done <= 0 ;        
+            	i <= 0 ;
+            	j <= 0 ;
+            	done <= 0;
+		for(k=0;k<25;k=k+1) begin
+        	    	window[k] <= 0;
+		end
+
         end
         if (enable) begin
-            f = 0;
-            for(x=i;x<i+2;x++) begin
-				for(y=0;y<2;y++) begin
-					window[f] = image[j+(n*x)+y];
-                    f = f + 1;
-				end
+            	f = 0;
+            	for(x=i;x<i+windowSize;x++) begin
+			for(y=0;y<windowSize;y++) begin
+				window[f] = image[j+(imgSize*x)+y];
+            	        	f = f + 1;
 			end
-            j = j + 2; 
-			if(j >= n) begin
-				i = i + 2;
-				j = 0;
-			end
-			if(i >= n) begin
-				done = 1;	
-			end
+		end
+
+            	j = j + windowSize;
+
+		if(j >= imgSize) begin
+			i = i + windowSize;
+			j = 0;
+		end
+		
+		if(i >= imgSize) begin
+			done = 1;	
+		end
             
         end
         
