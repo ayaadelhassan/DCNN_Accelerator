@@ -13,8 +13,6 @@ module test (clk);
     reg [DATA_SIZE -1: 0] out[0:1023];
 
     DMA dma(.clk(clk),.enable(1'b1),.RW(1'b1),.address(address), .inputDATA(dmaInput),.outputData(dmaOut));
-    LoadImage limg (.clk(clk), .enable(1'b1), .imgSize(6'd32), .address(address), .initialAddr(20'b0), .image(dmaOut) ,.done(done), .out(out) );
-    CNN_ALU cnnAlu ()
-    
-    Conv conv(); 
+    LoadImage limg (.clk(clk), .enable(dmaEnable), .imgSize(6'd32), .address(address), .initialAddr(20'b0), .image(dmaOut) ,.done(done), .out(out) );
+   
 endmodule

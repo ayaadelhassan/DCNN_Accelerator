@@ -1,7 +1,7 @@
 
 module CNN_ALU (clk, enable, reset, initialAddr, 
 address, dmaOut ,imgSize, filterSize, noOfFilters, 
-prevImagesCount, dmaEnable, opDone, done, poolEnable, convEnable , convORpoolDone ,imgAddr );
+prevImagesCount, dmaEnable, opDone, done, poolEnable, convEnable , convORpoolDone ,imgAddr ,loadImageEnable );
 
     localparam MEM_ADDR_SIZE = 20;
     localparam BLOCK_SIZE = 150;
@@ -35,7 +35,8 @@ prevImagesCount, dmaEnable, opDone, done, poolEnable, convEnable , convORpoolDon
     reg [DATA_SIZE-1:0] filter [0:24];//max size of filter
     reg convDone, poolDone; 
     reg [DATA_SIZE-1:0] result ; 
-    reg [DATA_SIZE-1:0] interMediaResult; 
+    reg [DATA_SIZE-1:0] interMediaResult;
+    reg convORpoolDone; 
     //signals 
     reg readNoOfLayersSignal;    
     reg readLayerDataSignal;    
@@ -47,7 +48,7 @@ prevImagesCount, dmaEnable, opDone, done, poolEnable, convEnable , convORpoolDon
     reg doneReadFilterSignal; 
     reg doneReadImageSignal;
     reg donesaveImageSignal; 
-
+    reg opDone,done; 
     integer  counter;
     integer filterCounter; 
     integer layerCounter;
@@ -81,11 +82,12 @@ prevImagesCount, dmaEnable, opDone, done, poolEnable, convEnable , convORpoolDon
 
     end
 
-    intger i; 
+    integer i; 
     always @(posedge clk) begin
         opDone = opDone ||  convORpoolDone; 
         
-        if(convORpoolDone) begin
+        if(enable && convORpoolDone) begin
+            convORpoolDone = 0; 
             imgAddr = prevImagesCount * imgSize * imgSize; // address of first intermidiat result for next layer    
             if(layerType)begin //conv 
                  address = address + (noOfFilters * filterSize * filterSize); 
@@ -99,7 +101,7 @@ prevImagesCount, dmaEnable, opDone, done, poolEnable, convEnable , convORpoolDon
             doneReadLayerDataSignal = 0;
         end
 
-        if (opDone)begin // there is an operation done 
+        if (enable && opDone)begin // there is an operation done 
             opDone = 0;
             poolEnable = 0; 
             convEnable = 0; 

@@ -19,10 +19,10 @@ module LoadImage (clk, enable, imgSize, address, initialAddr, image ,done, out )
         counter = 0;  
 	    done = 0; 
         k = 0; 
-        operand = 150; 
+        operand = 25; 
     end
     
-    assign iterations = (imgSize * imgSize / 10'd150) + 1;
+    assign iterations = (imgSize * imgSize / 10'd25) + 1;
     
     integer  i;
     always @(posedge clk)begin
@@ -32,16 +32,18 @@ module LoadImage (clk, enable, imgSize, address, initialAddr, image ,done, out )
     end 
 
     always @(negedge clk) begin
+        if(enable)begin
         if(counter < iterations && done == 0) begin
-            for(i = 0 ; i < 150 ; i = i +1 )begin
+            for(i = 0 ; i < 25 ; i = i +1 )begin
                	k = counter *operand;
                 k = k + i;  
                 out[k] = image[i];
             end
-	counter =  counter + 1; 
-        address = address + 10'd150;
+	    counter =  counter + 1; 
+        address = address + 10'd25;
         end else begin
            done = 1;
+        end
         end
     end
 endmodule
