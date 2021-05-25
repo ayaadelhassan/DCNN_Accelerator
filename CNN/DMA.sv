@@ -1,7 +1,7 @@
 module DMA (clk, enable, RW, address, inputDATA, outputData); 
-parameter ADDR_WIDTH = 20;
-parameter  DATA_WIDTH = 16;
-parameter  BLOCK_SIZE = 150;// output array size 
+localparam ADDR_WIDTH = 16;
+localparam  DATA_WIDTH = 16;
+localparam  BLOCK_SIZE = 25;// output array size 
 input clk, RW, enable; 
 input [ADDR_WIDTH-1:0] address;
 input [DATA_WIDTH-1:0] inputDATA; 
