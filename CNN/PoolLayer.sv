@@ -1,6 +1,7 @@
 
 module PoolLayer (clk,enable, reset, imagesCount, imgSize, address, done , loadImgEnable, loadImgAddrr, image ,opDone,RW);
     localparam DATA_SIZE = 16;
+    localparam ADDR_WIDTH = 20;
     localparam  n = 32;
     input clk, enable, reset, opDone; 
     input imagesCount,  address; // address of first image in intermidiat layer

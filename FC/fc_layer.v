@@ -2,7 +2,7 @@
 module fc_layer #(parameter numNodesIn = 5,
                   parameter numNodesOut = 3)
                  (enable,
-                 reset,
+                  reset,
                   inputNodes,
                   outputNodes,
                   weights,
@@ -28,57 +28,56 @@ module fc_layer #(parameter numNodesIn = 5,
     reg [10: 0] curWeightsI;
     reg [10: 0] outputsI;
     reg [10: 0] stage;
-
+    
     always @(posedge clk) begin
-
+        
+        if (reset == 1) begin
+            stage = 1;
+        end
         if (enable) begin
             
-            if (reset == 1) begin
-                stage = 1;
-            end
-
             if (stage == 1) begin
                 weightsI <= 0;
-                inputsI <= 0;
+                inputsI  <= 0;
                 outputsI <= 0;
                 stage = 2;
             end
             
             else if (stage == 2) begin
-                outputNodes[outputsI] <= 0;
-                inputsI <= 0;
-                curWeightsI <= 0;
-                stage = 3;
-            end
-            
-            else if (stage == 3) begin
-                outputNodes[outputsI] = outputNodes[outputsI] + inputNodes[inputsI] * weights[weightsI];
-                curWeightsI = curWeightsI + 1;
-                if(curWeightsI < numNodesIn) begin
-                    weightsI = weightsI + 1;
-                    inputsI = inputsI + 1;
-                end
-                else begin
-                    curWeightsI = curWeightsI - 1;
-                    weightsI = weightsI + 1;
-                    stage = 4;
-                end
-            end
-
-            else if (stage == 4) begin
-                outputNodes[outputsI] = outputNodes[outputsI] + biases[outputsI];
-                outputsI = outputsI + 1;
-                if(outputsI < numNodesOut) begin
-                    stage = 2;
-                end
-                else
-                    stage = 5;
-            end
-            
-            else begin
-                finished = 1;
-            end
-            
+            outputNodes[outputsI] <= 0;
+            inputsI               <= 0;
+            curWeightsI           <= 0;
+            stage = 3;
         end
+        
+        else if (stage == 3) begin
+        outputNodes[outputsI] = outputNodes[outputsI] + inputNodes[inputsI] * weights[weightsI];
+        curWeightsI           = curWeightsI + 1;
+        if (curWeightsI < numNodesIn) begin
+            weightsI = weightsI + 1;
+            inputsI  = inputsI + 1;
+        end
+        else begin
+            curWeightsI = curWeightsI - 1;
+            weightsI    = weightsI + 1;
+            stage       = 4;
+        end
+    end
+    
+    else if (stage == 4) begin
+    outputNodes[outputsI] = outputNodes[outputsI] + biases[outputsI];
+    outputsI              = outputsI + 1;
+    if (outputsI < numNodesOut) begin
+        stage = 2;
+    end
+    else
+        stage = 5;
+    end
+    
+    else begin
+    finished = 1;
+    end
+    
+    end
     end
 endmodule

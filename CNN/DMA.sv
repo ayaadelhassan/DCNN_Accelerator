@@ -16,14 +16,14 @@ reg signed [DATA_WIDTH -1 : 0]ram [0:(BLOCK_SIZE * 100)];
 integer i;
 initial begin
     for (i = 0; i < BLOCK_SIZE*100; i = i + 1 ) begin
-        ram[i] = 16'b0000010000000000 + i; 
+        ram[i] = 16'b0000010000000000; 
     end
-    /*ram[0] = 16'b0000100000000000;
-    ram[1] = 16'b0000010000000000;
-    ram[4] = 16'b0001010000000000;
+    ram[0] = 16'b0000000000000101;
+    ram[1] = 16'b0000000000000011;
+    ram[4] = 16'b0000000000001000;
     ram[5] = 16'b0010000000000000;
 
-    ram[2] = 16'b0001000000000000;
+    ram[2] = 16'b0000000000001000;
     ram[3] = 16'b0000010000000000;
     ram[6] = 16'b0001010000000000;
     ram[7] = 16'b0011100000000000;
@@ -38,16 +38,15 @@ initial begin
     ram[10] = 16'b0000100000000000;
     ram[11] = 16'b0000010000000000;
     ram[14] = 16'b0001010000000000;
-    ram[15] = 16'b0110000000000000;*/
+    ram[15] = 16'b0110000000000000;
 
 end
 
 always @(posedge clk) begin
 
-    if (enable ==1) begin
+    if (enable == 1) begin
         if (RW) begin //read 1
             outputData = ram[0:BLOCK_SIZE-1]; 
-	  
         end
         else begin //write 0
             ram[address] = inputDATA; 
