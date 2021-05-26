@@ -1,6 +1,6 @@
 import math
-f = open("CNNInfo/biasesconv2d_3.txt", "r") #will be an input
-f_out=open("fixed_point_biases3.txt","a")
+f = open("D:\college\cmp3\second\\vlsi\DCNN_Accelerator\IO\FCInfo\\biasesdense_2.txt", "r") #will be an input
+f_out=open("D:\college\cmp3\second\\vlsi\DCNN_Accelerator\IO\\fixed_point_biasesFC2.txt","a")
 numbers = []
 for x in f:
   data = x.split() 

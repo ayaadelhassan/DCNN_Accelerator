@@ -9,29 +9,31 @@
 1 -> 0 //convolution
 2 -> 5 //filter size
 3 -> 6 //how many filters
-4:10 -> biases1
-11:161 -> filter1
+4:9 -> biases1
+10:159 -> filter1
 
 --layer2(pooling)
-162 -> 1 //pooling
+160 -> 1 //pooling
 
 --layer3(conv)
-163 -> 5 //filter size
-164 -> 96 //how many filters
-165:181 -> biases2
-182: 2582 -> filter2
+161 -> 0 //convolution
+162-> 5 //filter size
+163 -> 96 //how many filters
+164:179 -> biases2
+180 : 2579 -> filter2
 
 --layer4(pooling)
-2583 -> 1
+2580 -> 1
 
 --layer5(conv)
-2584 -> 5 //filter size
-2585 -> 1920 //how many filters
-2586:2706 -> biases3
-2707:50707 -> filter3
+2581 -> 0 //convolution
+2582 -> 5 //filter size
+2583 -> 1920 //how many filters
+2584:2703 -> biases3
+2704:50703 -> filter3
 
 --Image
-50708:51732 -> image
+50704:51727 -> image
 
 --output
-starting from 51733
+starting from 51728
