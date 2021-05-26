@@ -1,0 +1,39 @@
+///////////////////////////////
+-All addresses are in decimal
+-Last output layer will be in 
+ FC RAM starting from address 0
+////////////////////////////////
+0 -> number of layers
+
+--layer1(conv)
+1 -> 0 //convolution
+2 -> 5 //filter size
+3 -> 6 //how many filters
+4:9 -> biases1
+10:159 -> filter1
+
+--layer2(pooling)
+160 -> 1 //pooling
+
+--layer3(conv)
+161 -> 0 //convolution
+162-> 5 //filter size
+163 -> 96 //how many filters
+164:179 -> biases2
+180 : 2579 -> filter2
+
+--layer4(pooling)
+2580 -> 1
+
+--layer5(conv)
+2581 -> 0 //convolution
+2582 -> 5 //filter size
+2583 -> 1920 //how many filters
+2584:2703 -> biases3
+2704:50703 -> filter3
+
+--Image
+50704:51727 -> image
+
+--output
+starting from 51728

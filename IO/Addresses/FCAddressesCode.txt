@@ -1,0 +1,23 @@
+///////////////////////////////
+-All addresses are in decimal
+-
+//////////////////////////////
+--layer1
+0:119 -> CNN output
+120:239 -> first col of weights1
+240 -> first col bias
+To be repeated 84 times
+End address -> 10283
+
+--output1(layer2)
+10284:10367 -> out1
+10368:10451 -> first col of weights2
+10452 -> first col bias
+To be repeated 10 times
+End address -> 11217
+
+--output2(layer3)
+11218:11227 -> out2
+
+--FINAL OUTPUT:
+To be put in address 11240

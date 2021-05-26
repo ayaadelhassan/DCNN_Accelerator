@@ -9,23 +9,23 @@ z2
 cModel Technology
 dD:/college/cmp3/second/vlsi/req
 vCNNmemory
-Z0 !s110 1621789439
+Z0 !s110 1621987514
 !i10b 1
-!s100 RA9:X`IcjCzQR;;1B1PN40
-IYDkebBVCl[3Qd798AR2JW0
+!s100 Zgj>P1e2R9@Z:oKQ;=i]a2
+I>AZiS[YN_K?gD]>P]_@;Q0
 Z1 VDg1SIo80bB@j0V0VzS_@n1
 Z2 dD:/college/cmp3/second/vlsi/DCNN_Accelerator/IO
-w1621789396
-8D:\college\cmp3\second\vlsi\DCNN_Accelerator\IO\cnn_ram.v
-FD:\college\cmp3\second\vlsi\DCNN_Accelerator\IO\cnn_ram.v
+w1621799230
+8D:/college/cmp3/second/vlsi/DCNN_Accelerator/IO/cnn_ram.v
+FD:/college/cmp3/second/vlsi/DCNN_Accelerator/IO/cnn_ram.v
 L0 2
 Z3 OV;L;10.5b;63
 r1
 !s85 0
 31
-Z4 !s108 1621789439.000000
-!s107 D:\college\cmp3\second\vlsi\DCNN_Accelerator\IO\cnn_ram.v|
-!s90 -reportprogress|300|-work|work|-stats=none|D:\college\cmp3\second\vlsi\DCNN_Accelerator\IO\cnn_ram.v|
+Z4 !s108 1621987514.000000
+!s107 D:/college/cmp3/second/vlsi/DCNN_Accelerator/IO/cnn_ram.v|
+!s90 -reportprogress|300|-work|work|-stats=none|D:/college/cmp3/second/vlsi/DCNN_Accelerator/IO/cnn_ram.v|
 !i113 1
 Z5 o-work work
 Z6 tCvgOpt 0
@@ -34,24 +34,45 @@ vFCmemory
 R0
 !i10b 1
 !s100 z]W1208f:dIf3fmXoeV;K2
-IZ0kLQkGI>[ha4I[Z[F7QB0
+IELz7?ca<kRi7`YeYJTV4_0
 R1
 R2
 w1621789428
-8D:\college\cmp3\second\vlsi\DCNN_Accelerator\IO\fc_ram.v
-FD:\college\cmp3\second\vlsi\DCNN_Accelerator\IO\fc_ram.v
+8D:/college/cmp3/second/vlsi/DCNN_Accelerator/IO/fc_ram.v
+FD:/college/cmp3/second/vlsi/DCNN_Accelerator/IO/fc_ram.v
 L0 2
 R3
 r1
 !s85 0
 31
 R4
-!s107 D:\college\cmp3\second\vlsi\DCNN_Accelerator\IO\fc_ram.v|
-!s90 -reportprogress|300|-work|work|-stats=none|D:\college\cmp3\second\vlsi\DCNN_Accelerator\IO\fc_ram.v|
+!s107 D:/college/cmp3/second/vlsi/DCNN_Accelerator/IO/fc_ram.v|
+!s90 -reportprogress|300|-work|work|-stats=none|D:/college/cmp3/second/vlsi/DCNN_Accelerator/IO/fc_ram.v|
 !i113 1
 R5
 R6
 n@f@cmemory
+vio
+!s110 1621988285
+!i10b 1
+!s100 coKVHh6LS@ZnjanaTnHW32
+IATf[?bcDd8cehGSF4IW8<3
+R1
+R2
+w1621988274
+8D:\college\cmp3\second\vlsi\DCNN_Accelerator\IO\io.v
+FD:\college\cmp3\second\vlsi\DCNN_Accelerator\IO\io.v
+L0 1
+R3
+r1
+!s85 0
+31
+!s108 1621988285.000000
+!s107 D:\college\cmp3\second\vlsi\DCNN_Accelerator\IO\io.v|
+!s90 -reportprogress|300|-work|work|-stats=none|D:\college\cmp3\second\vlsi\DCNN_Accelerator\IO\io.v|
+!i113 1
+R5
+R6
 vmemory
 R0
 !i10b 1

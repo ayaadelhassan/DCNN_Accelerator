@@ -17,7 +17,13 @@ module convolve_image_clked(clk, reset ,enable, imgSize, image, filterSize, filt
 	integer i,j,k,f;
     	always @(posedge clk) 
 	begin
-        	if (reset) begin
+		if(done) begin
+			done = 0;
+			i = 0;
+			j = 0;
+		end
+        	
+		if (reset) begin
         	    	i  <= 0; 
         	    	j <= 0 ;
 			done <= 0;

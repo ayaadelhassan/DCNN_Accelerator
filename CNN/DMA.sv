@@ -1,7 +1,7 @@
 module DMA (clk, enable, RW, address, inputDATA, outputData); 
-parameter ADDR_WIDTH = 20;
-parameter  DATA_WIDTH = 16;
-parameter  BLOCK_SIZE = 150;// output array size 
+localparam ADDR_WIDTH = 16;
+localparam  DATA_WIDTH = 16;
+localparam  BLOCK_SIZE = 25;// output array size 
 input clk, RW, enable; 
 input [ADDR_WIDTH-1:0] address;
 input [DATA_WIDTH-1:0] inputDATA; 
@@ -15,8 +15,8 @@ reg [DATA_WIDTH -1 : 0]ram [0:(BLOCK_SIZE * 100)];
 // RAM ram(clk, enable,address,RW,ramIn,ramOut);
 integer i;
 initial begin
-    for (i = 0; i < BLOCK_SIZE * 100; i = i + 1 ) begin
-        ram[i] = i; 
+    for (i = 0; i < BLOCK_SIZE*100; i = i + 1 ) begin
+        ram[i] = 16'b0000010000000000; 
     end
 end
 

@@ -1,6 +1,6 @@
 import math
-f = open("weightsdense_1.txt", "r") #will be an input 
-f_out=open("fixed_point_out.txt","a")
+f = open("D:\college\cmp3\second\\vlsi\DCNN_Accelerator\IO\FCInfo\\biasesdense_2.txt", "r") #will be an input
+f_out=open("D:\college\cmp3\second\\vlsi\DCNN_Accelerator\IO\\fixed_point_biasesFC2.txt","a")
 numbers = []
 for x in f:
   data = x.split() 
@@ -20,7 +20,7 @@ for n in numbers:
         frac_number=n-int_number
         int_number_bin= "1"+"{0:4b}".format(-1*int_number).replace(" ", "0")
         precision=11
-        frac_number_bin="."
+        frac_number_bin=""
         while (precision):
             frac_number *= 2
             bit = int(frac_number)
@@ -39,7 +39,7 @@ for n in numbers:
         frac_number=int_number-n
         int_number_bin= "0"+"{0:4b}".format(int_number).replace(" ", "0")
         precision=11
-        frac_number_bin="."
+        frac_number_bin=""
         while (precision):
             frac_number *= 2
             bit = int(frac_number)

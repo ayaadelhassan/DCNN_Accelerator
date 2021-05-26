@@ -1,21 +1,23 @@
+
 module fc_layer #(parameter numNodesIn = 5,
                   parameter numNodesOut = 3)
                  (enable,
                   inputNodes,
                   outputNodes,
-                  weights,
+                  weights, 
                   biases,
-                  finished);
-    
+                  finished,
+                  clk);
+
     // The address from which to start reading weights from dataory and another to start writing output.
     // input [15:0] readAddress, writeAddress, weightsAddress, biasesAddress;
     
     // input wire[15:0] readAddress = 0;
-    // wire [15: 0] writeAddress    = readAddress + numNodesIn + numNodesIn * numNodesOut + numNodesOut;
-    // wire [15: 0] weightsAddress  = readAddress + numNodesIn;
-    // wire [15: 0] biasesAddress   = readAddress + numNodesIn + numNodesIn * numNodesOut;
+    // wire [15: 0] writeAddress   = readAddress + numNodesIn + numNodesIn * numNodesOut + numNodesOut;
+    // wire [15: 0] weightsAddress = readAddress + numNodesIn;
+    // wire [15: 0] biasesAddress  = readAddress + numNodesIn + numNodesIn * numNodesOut;
     
-    
+
     // 5 nodes
     // 5 * 3 weights
     // 3 biases
@@ -26,7 +28,7 @@ module fc_layer #(parameter numNodesIn = 5,
     
     // enable to start working
     input enable;
-    
+    input clk;
     // //                 input nodes   total num of weights       biases      output nodes for writing
     // reg [15: 0] data[0: numNodesIn + numNodesIn * numNodesOut + numNodesOut + numNodesOut];
     // // The whole block for this operation
@@ -37,7 +39,6 @@ module fc_layer #(parameter numNodesIn = 5,
     // We read the input nodes once at the start
     input [15: 0] inputNodes[0: numNodesIn - 1];
     output reg [15: 0] outputNodes[0: numNodesOut - 1];
-    
     input [15: 0] weights[0: numNodesIn * numNodesOut - 1];
     input [15: 0] biases[0: numNodesOut - 1];
     
@@ -45,7 +46,10 @@ module fc_layer #(parameter numNodesIn = 5,
     output reg finished;
     
     integer i, j, it;
-    always @(enable) begin
+    always @(posedge clk) begin
+        // for (it = 0; it < numNodesIn; it = it + 1) begin
+        //     inputNodes[it] = data[it];
+        // end
         if (enable) begin
             
             for (it = 0; it < numNodesIn; it = it + 1) begin
@@ -72,13 +76,10 @@ module fc_layer #(parameter numNodesIn = 5,
                 end
                 
                 // Write the outputnode after adding its bias
-                outputNodes[j] = outputNodes[j] + biases[j];
-                address = writeAddress;
-                write_enable = 1;
-                
-                write_enable = 0;
+                //outputNodes[j] = outputNodes[j] + biases[j];
+                finished = 1;
             end
-            finished <= 1;
+            
         end
     end
 endmodule
