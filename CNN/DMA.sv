@@ -7,9 +7,9 @@ input [ADDR_WIDTH-1:0] address;
 input [DATA_WIDTH-1:0] inputDATA; 
 output outputData;
 
-reg [DATA_WIDTH-1:0] outputData [0:BLOCK_SIZE-1];
+reg signed [DATA_WIDTH-1:0] outputData [0:BLOCK_SIZE-1];
 
-reg [DATA_WIDTH -1 : 0]ram [0:(BLOCK_SIZE * 100)];
+reg signed [DATA_WIDTH -1 : 0]ram [0:(BLOCK_SIZE * 100)];
 
 
 // RAM ram(clk, enable,address,RW,ramIn,ramOut);
@@ -18,6 +18,28 @@ initial begin
     for (i = 0; i < BLOCK_SIZE*100; i = i + 1 ) begin
         ram[i] = 16'b0000010000000000; 
     end
+    ram[0] = 16'b0000100000000000;
+    ram[1] = 16'b0000010000000000;
+    ram[4] = 16'b0001010000000000;
+    ram[5] = 16'b0010000000000000;
+
+    ram[2] = 16'b0001000000000000;
+    ram[3] = 16'b0000010000000000;
+    ram[6] = 16'b0001010000000000;
+    ram[7] = 16'b0011100000000000;
+
+
+    ram[8] = 16'b1111000000000000;
+    ram[9] = 16'b1111000000000000;
+    ram[12] = 16'b1110100000000000;
+    ram[13] = 16'b1101100000000000;
+
+
+    ram[10] = 16'b0000100000000000;
+    ram[11] = 16'b0000010000000000;
+    ram[14] = 16'b0001010000000000;
+    ram[15] = 16'b0010000000000000;
+
 end
 
 always @(posedge clk) begin

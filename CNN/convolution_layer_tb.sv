@@ -2,7 +2,7 @@ module convolution_layer_tb;
     	reg clk, reset, loadEnable, dmaEnable, rw, loadDone;
 	reg [15:0] address;
 	reg [15:0] inputData;
-	reg [15:0] dmaOut [0:24];
+	reg signed [15:0] dmaOut [0:24];
 	reg [15:0] blockSize;
 	reg [15:0] initAddr;
         reg signed [15: 0] loadOut[0:1023]; 

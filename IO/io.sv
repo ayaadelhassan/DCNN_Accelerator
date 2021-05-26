@@ -1,8 +1,9 @@
-module io(loadCNN, loadFC, loadImg, finishCNN, finishFC, done);
-input  loadCNN, loadFC, loadImg;
+module io(loadCNN, loadFC, loadImg, finishCNN, finishFC, done, CNNData,FCData,IMGDAat,clk);
+input  loadCNN, loadFC, loadImg,clk;
 output reg finishCNN,finishFC,done;
-reg [15:0] CNNData [50703:0];
-reg [15:0] FCData  [11217:0];
+output reg [15:0] CNNData [50703:0];
+output reg [15:0] FCData  [11217:0];
+output reg [0:16383] IMGDAat;
 integer data_file;
 integer weights_file;
 integer bias_file;
@@ -10,14 +11,17 @@ integer scan_file;
 integer i=0;
 integer j=0;
 integer k=0;
+integer m;
 reg [15:0] layer1weights [119:0][83:0];
 reg [15:0] layer1biases [83:0];
 reg [15:0] layer2weights [83:0][9:0];
 reg [15:0] layer2biases [9:0];
+//////////////////////////
+reg decompress;
+wire [0:16383] imagebuffer;
+decompression de (decompress,imagebuffer);
 `define NULL 0
-
 always @(loadFC)  begin
-
 //---------------------------layer 1-----------------------
 weights_file=$fopen("fixed_point_weightsFC1.txt","r");
 bias_file=$fopen("fixed_point_biasesFC1.txt","r");
@@ -27,6 +31,7 @@ if(weights_file==`NULL) begin
 $display("DATA FILE WAS NULL");
 $finish;
 end
+$display("------------------**********************************************************");
 while(!$feof(weights_file)) begin
 if(j==84) begin
 j=0;
@@ -41,6 +46,7 @@ $display("DATA FILE WAS NULL");
 $finish;
 end
 i = 0;
+$display("------------------**********************************************************");
 while(!$feof(bias_file)) begin 
 scan_file=$fscanf(bias_file,"%b ",layer1biases[i]);
 i=i+1;
@@ -54,6 +60,7 @@ if(weights_file==`NULL) begin
 $display("DATA FILE WAS NULL");
 $finish;
 end
+$display("------------------**********************************************************");
 while(!$feof(weights_file)) begin
 if(j==10) begin
 j=0;
@@ -68,6 +75,7 @@ $display("DATA FILE WAS NULL");
 $finish;
 end
 i = 0;
+$display("------------------**********************************************************");
 while(!$feof(bias_file)) begin 
 scan_file=$fscanf(bias_file,"%b ",layer2biases[i]);
 i=i+1;
@@ -103,9 +111,11 @@ FCData[k]=layer2weights[j][i];
 j=j+1;
 k=k+1;
 end
+
+
 finishFC = 1;
 end
-//--------------------------------------------------------------
+
 always @(loadCNN)  begin
 CNNData[0] = 5;
 //-----------------------layer1------------------------
@@ -187,11 +197,24 @@ while(!$feof(data_file)) begin
 scan_file=$fscanf(data_file,"%b ",CNNData[i]);
 i=i+1;
 end
+
+
+
 finishCNN = 1;
 end
 
-always @(loadImg)  begin
-done = 1;
+always @(posedge clk && loadImg )  //need two clocks clk =50 falling
+begin
+decompress=1;
+end
+
+always @(negedge clk && loadImg)
+begin
+   for(m=0;m<16384;m=m+1)
+    begin
+    IMGDAat[m] = imagebuffer[m];
+    end
+   done = 1;
 end
 
 endmodule
