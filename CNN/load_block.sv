@@ -14,7 +14,7 @@ module load_block (clk, enable, size, address, dmaOut, dmaAddr, out, done);
     integer k; 
     integer operand; 
     output out;
-    reg [DATA_SIZE -1: 0] out[0:1023]; 
+    reg signed [DATA_SIZE -1: 0] out[0:1023]; 
 
     initial begin
         counter = 0;  
@@ -22,12 +22,18 @@ module load_block (clk, enable, size, address, dmaOut, dmaAddr, out, done);
         k = 0; 
         operand = 25;
     end
-    
-    assign iterations = (size * size / 10'd25) + 1;
+
+    assign iterations = (((size * size) +  10'd25 - 1)/ 10'd25);
     
     integer  i;
 
     always @(posedge clk) begin
+	if(done) begin
+		done = 0;
+		counter = 0;
+		k = 0;
+	end
+	
 	if(enable) begin
         	if(counter == 0)begin
            		dmaAddr = address;

@@ -20,42 +20,104 @@ module convolution_layer(clk, enable, reset, loadDone,
 
 	// Load Block parameters
 	output reg loadEnable;
-	output [ADDR_SZ-1:0] loadAddr;  
-	output [DATA_SZ-1:0] loadSize;
-	input [DATA_SZ -1: 0] loadOut[0:1023];
+	output reg [ADDR_SZ-1:0] loadAddr;  
+	output reg [DATA_SZ-1:0] loadSize;
+	input signed [DATA_SZ -1: 0] loadOut[0:1023];
 	input loadDone;
 	
-	reg loadingOp;
+	
+	reg signed [DATA_SZ -1: 0] image[0:1023];
+	reg signed [DATA_SZ -1: 0] filter[0:24];
+
+	reg loadingOp, imageOrFilter, isImageLoaded, isFilterLoaded;
 	reg [DATA_SZ-1:0] imgCounter;
 	reg [ADDR_SZ-1:0] currentImgAddress;
 	
-	always @(clk)   // Loops on the images and filter then do the convolution
+	reg [DATA_SZ-1:0] filterCounter;
+	reg [ADDR_SZ-1:0] currentfilterAddress;
+	
+	reg [DATA_SZ-1:0] filterPerImage;
+	
+	reg [DATA_SZ-1:0] convolved;
+
+	reg convEnable, convDone;
+
+	assign filterPerImage = filtersNumber/imgsNumber;
+
+	convolve_image_clked ci(.clk(clk), .reset(reset), .enable(convEnable), 
+				.imgSize(imgSize), .image(image), .filterSize(filterSize),
+		 		.filter(filter), .convolved(convolved), .done(convDone));
+
+	always @(posedge clk)   // Loops on the images and filter then do the convolution
 	begin
-		if(reset) begin
-			imgCounter = 0;	
-			loadingOp = 0;
+		
+		if(convDone && convEnable) begin
+			convEnable = 0;
+			isFilterLoaded = 0;
+			if(filterCounter == filterPerImage) begin
+				filterCounter = 0;
+				isImageLoaded = 0;
+				if(imgCounter == imgsNumber) begin
+					done = 1;
+				end
+			end
 		end
-		else if (enable) begin
-			if(imgCounter == 0) begin
+		
+		if(loadDone && loadingOp) begin
+			if(imageOrFilter) begin
+				imgCounter = imgCounter + 1;
+				currentImgAddress = currentImgAddress + imgSize*imgSize;
+				imageOrFilter = 0;
+				isImageLoaded = 1;
+				image = loadOut;
+			end else begin
+				filterCounter = filterCounter + 1;
+				currentfilterAddress = currentfilterAddress + filterSize*filterSize;
+				isFilterLoaded = 1;
+				filter = loadOut[0:24];
+				
+			end
+
+			loadingOp = 0;
+			loadEnable = 0;
+		end
+		
+		if(reset) begin
+			done = 0;
+			imgCounter = 0;
+			filterCounter = 0;
+			loadingOp = 0;
+			imageOrFilter = 0;
+			isImageLoaded = 0;
+			isFilterLoaded = 0;
+			convEnable = 0;
+		end
+		else if (enable && loadingOp == 0 && done == 0) begin
+			if(imgCounter == 0 && filterCounter == 0) begin
 				currentImgAddress = imgsAddress;
+				isImageLoaded = 0;
+				currentfilterAddress = filterAddress;
+				isFilterLoaded = 0;
 			end
-			// 1- Read the image
-			if(imgCounter < imgsNumber) begin
-				if(loadingOp == 0) begin
-					loadingOp = 1;
-					loadEnable = 1;
-					loadSize = imgSize;
-					loadAddr = currentImgAddress;
-				end
-				else begin
-				if(loadDone == 1) begin
-					
-					imgCounter = imgCounter + 1;
-					currentImgAddress = currentImgAddress + imgSize*imgSize; // Is that right?!
-				end
-				end
+			
+			
+			
+			if(isImageLoaded == 0) begin
+				loadingOp = 1;
+				loadEnable = 1;
+				loadSize = imgSize;
+				loadAddr = currentImgAddress;
+				imageOrFilter = 1;
+			end else if(isFilterLoaded == 0) begin
+				loadingOp = 1;
+				loadEnable = 1;
+				loadSize = filterSize;
+				loadAddr = currentfilterAddress;
+				imageOrFilter = 0;
+			end else begin
+				convEnable = 1;	
 			end
-			// 2- Read the filter
+			
 		end
 	end
 endmodule
