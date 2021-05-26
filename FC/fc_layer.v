@@ -1,19 +1,20 @@
 module fc_layer #(parameter numNodesIn = 5,
                   parameter numNodesOut = 3)
                  (enable,
-                  readAddress,
+                  inputNodes,
+                  outputNodes,
+                  weights,
+                  biases,
                   finished);
     
-    // Bias for this layer and its enable to start working
-    input enable;
-    
-    // The address from which to start reading weights from memory and another to start writing output.
+    // The address from which to start reading weights from dataory and another to start writing output.
     // input [15:0] readAddress, writeAddress, weightsAddress, biasesAddress;
     
-    input wire[15:0] readAddress;
-    wire [15: 0] writeAddress   = readAddress + numNodesIn + numNodesIn * numNodesOut + numNodesOut;
-    wire [15: 0] weightsAddress = readAddress + numNodesIn;
-    wire [15: 0] biasesAddress  = readAddress + numNodesIn + numNodesIn * numNodesOut;
+    // input wire[15:0] readAddress = 0;
+    // wire [15: 0] writeAddress    = readAddress + numNodesIn + numNodesIn * numNodesOut + numNodesOut;
+    // wire [15: 0] weightsAddress  = readAddress + numNodesIn;
+    // wire [15: 0] biasesAddress   = readAddress + numNodesIn + numNodesIn * numNodesOut;
+    
     
     // 5 nodes
     // 5 * 3 weights
@@ -23,44 +24,59 @@ module fc_layer #(parameter numNodesIn = 5,
     // 1 biases
     // 1 o/p
     
-    //                 input nodes   total num of weights       biases      output nodes for writing
-    reg [15: 0] mem[0: numNodesIn + numNodesIn * numNodesOut + numNodesOut + numNodesOut];
-    // The whole block for this operation
+    // enable to start working
+    input enable;
     
-    reg [15: 0] outputNodes[0: numNodesOut - 1];
+    // //                 input nodes   total num of weights       biases      output nodes for writing
+    // reg [15: 0] data[0: numNodesIn + numNodesIn * numNodesOut + numNodesOut + numNodesOut];
+    // // The whole block for this operation
     
-    reg [15: 0] readMem[0: numNodesIn - 1]; // input nodes' weights
-    // The block returned in every read operation (will be 120)
+    // reg [15: 0] readdata[0: numNodesIn - 1]; // input nodes' weights
+    // // The block returned in every read operation (will be 120)
     
     // We read the input nodes once at the start
-    reg [15: 0] inputNodes[0: numNodesIn - 1];
+    input [15: 0] inputNodes[0: numNodesIn - 1];
+    output reg [15: 0] outputNodes[0: numNodesOut - 1];
+    
+    input [15: 0] weights[0: numNodesIn * numNodesOut - 1];
+    input [15: 0] biases[0: numNodesOut - 1];
     
     // Output signal when the layer finishes
     output reg finished;
     
     integer i, j, it;
     always @(enable) begin
-        for (it = 0; it < numNodesIn; it = it + 1) begin
-            inputNodes[it] = mem[it];
-        end
         if (enable) begin
+            
+            for (it = 0; it < numNodesIn; it = it + 1) begin
+                inputNodes[it] = data[it];
+            end
+            
             for (j = 0; j < numNodesOut; j = j+1) begin
                 // Initialize current output node
                 outputNodes[j] = 0;
                 
+                address = j * numNodesIn + numNodesIn;
+                for (it = 0; it < numNodesIn; it = it + 1) begin
+                    weights[it] = data_out[it];
+                end
                 // Read starting from weightsAddress (skip the first 5 nodes) +
                 //                   numNodesIn * j (go to the start of the weights of the current output node)
                 //  then read the numNodesIn(five) weights starting from that
-                for (it = 0; it < numNodesIn; it = it + 1) begin
-                    readMem[it] = mem[weightsAddress + (numNodesIn * j) + it];
-                end
+                // for (it = 0; it < numNodesIn; it = it + 1) begin
+                //     readdata[it] = data[weightsAddress + (numNodesIn * j) + it];
+                // end
                 
                 for (i = 0; i < numNodesIn; i = i+1) begin
-                    outputNodes[j] = outputNodes[j] + readMem[i] * inputNodes[i];
+                    outputNodes[j] = outputNodes[j] + weights[i] * inputNodes[i];
                 end
                 
                 // Write the outputnode after adding its bias
-                mem[writeAddress + j] = outputNodes[j] + mem[biasesAddress + j];
+                outputNodes[j] = outputNodes[j] + biases[j];
+                address = writeAddress;
+                write_enable = 1;
+                
+                write_enable = 0;
             end
             finished <= 1;
         end
