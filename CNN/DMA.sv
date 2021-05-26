@@ -16,7 +16,7 @@ reg signed [DATA_WIDTH -1 : 0]ram [0:(BLOCK_SIZE * 100)];
 integer i;
 initial begin
     for (i = 0; i < BLOCK_SIZE*100; i = i + 1 ) begin
-        ram[i] = 16'b0000010000000000; 
+        ram[i] = 16'b0000010000000000 + i; 
     end
     /*ram[0] = 16'b0000100000000000;
     ram[1] = 16'b0000010000000000;

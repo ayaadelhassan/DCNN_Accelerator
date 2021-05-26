@@ -1,20 +1,20 @@
 
 module CNN_ALU (clk, enable, reset, initialAddr, 
 address, memFetchResult ,imgSize, fetchedImage, 
- dmaEnable, opDone, done ,imgAddr ,loadImageEnable , loadImgAddrr,dmaRWSignal );
+ dmaEnable, opDone, done ,imgAddr ,loadImageEnable , loadImgAddrr, loadEnable, writeEnable);
 
-    localparam MEM_ADDR_SIZE = 20;
-    localparam BLOCK_SIZE = 150;
+    localparam MEM_ADDR_SIZE = 16;
+    localparam BLOCK_SIZE = 25;
     localparam DATA_SIZE = 16;
     localparam n = 32;
     localparam IMAGE_ADDR = 0;
 
-    input clk,enable, reset,opDone ; 
+    input clk,enable, reset ; 
     input  [MEM_ADDR_SIZE - 1 : 0] initialAddr;
-    input [DATA_SIZE-1:0] memFetchResult [0:BLOCK_SIZE-1]; 
-    input [DATA_SIZE-1:0] fetchedImage [0:n*n-1];
-    
-    output address,dmaRWSignal;
+    input memFetchResult; 
+    input reg signed [DATA_SIZE-1:0] fetchedImage [0:n*n-1];
+    reg signed [DATA_SIZE-1:0] memFetchResult [0:BLOCK_SIZE-1];
+    output address, loadEnable, writeEnable;
     output loadImageEnable, dmaEnable;
     output loadImgAddrr; 
     output done; 
@@ -22,11 +22,12 @@ address, memFetchResult ,imgSize, fetchedImage,
     //input  [DATA_SIZE-1:0] orgImgSize; 
     input  imgAddr; // for conv or pool layer to load from  
     output imgSize; 
-
+	
+    input reg opDone;
     reg [MEM_ADDR_SIZE - 1 : 0] loadImgAddrr; 
     reg [MEM_ADDR_SIZE - 1 : 0] address; 
     reg [MEM_ADDR_SIZE - 1 : 0] imgAddr; 
-    reg dmaEnable,convEnable,poolEnable; 
+    reg dmaEnable,convEnable; 
     reg [DATA_SIZE-1:0] prevImagesCount, prevFiltersCount; 
     reg [DATA_SIZE-1:0] noOfLayers; 
     reg [DATA_SIZE-1:0] layerType; 
@@ -35,12 +36,22 @@ address, memFetchResult ,imgSize, fetchedImage,
     reg [DATA_SIZE-1:0] filterSize;  
     reg [DATA_SIZE-1:0] noOfFilters;  
     reg [DATA_SIZE-1:0] filter [0:24];//max size of filter
-    reg convDone, poolDone; 
-    reg [DATA_SIZE-1:0] poolLoadAddr; 
-    reg poolDmaRW; 
+    reg convDone; 
+ 
 
     reg [DATA_SIZE-1:0] result ; 
     reg [DATA_SIZE-1:0] interMediaResult;
+
+
+    //pool layer outputs
+    reg [DATA_SIZE-1:0] poolLoadAddr;
+    reg [DATA_SIZE-1:0] poolLoadSize;
+    reg [DATA_SIZE-1:0] poolLoadOut;
+    reg poolLoadEnable;
+    reg [DATA_SIZE-1:0] poolWriteAddr;
+    reg [DATA_SIZE-1:0] poolWriteOut;
+    reg poolWriteEnable, poolDone, poolDmaRW,poolEnable;
+
     //signals 
     reg readNoOfLayersSignal;    
     reg readLayerDataSignal;    
@@ -52,48 +63,62 @@ address, memFetchResult ,imgSize, fetchedImage,
     reg doneReadFilterSignal; 
     reg doneReadImageSignal;
     reg donesaveImageSignal; 
-    reg opDone,done,dmaRWSignal; 
+    reg loadEnable, writeEnable;
+    reg done; 
     integer  counter;
     integer filterCounter; 
     integer layerCounter;
 
-    always @(posedge clk) begin
-        if(reset)begin
-        //stage 1 load # of layers
-        dmaEnable = 1;
-        address = initialAddr; 
-        readNoOfLayersSignal = 1;
-        // initial signals 
-        imgSize = 32;
-        opDone = 0; 
-        convDone = 0; 
-        poolDone = 0; 
-        counter = 0;
-        filterCounter = 0;  
-        prevImagesCount = 1;
-        prevFiltersCount = 1; 
-        readNoOfLayersSignal = 0;
-        readLayerDataSignal = 0; 
-        readFilterSignal = 0; 
-        readImageSignal = 0; 
-        saveImageSignal = 0; 
-        doneReadNoOfLayersSignal = 0;    
-        doneReadLayerDataSignal = 0;    
-        doneReadFilterSignal = 0; 
-        doneReadImageSignal = 0;
-        donesaveImageSignal = 0; 
-        end
-
-    end
+    
     //assign imgSize = orgImgSize; 
-    PoolLayer (.clk(clk),.enable(poolEnable), .reset(reset), .imagesCount(prevImagesCount), .imgSize(imgSize),
-     .address(imgAddr), .done(poolDone) , .loadImgEnable(loadImageEnable), .loadImgAddrr(loadImgAddrr), .image(fetchedImage) , .opDone(opDone),.RW(poolDmaRW));
+   /** pool_layer pl(.clk(clk), .enable(poolEnable), .reset(reset), .loadDone(poolLoadDone),
+		.imgsNumber(prevImagesCount), .imgSize(imgSize), .imgsAddress(imgAddr), .windowSize(16'd2), 
+		.loadAddr(poolLoadAddr), .loadSize(poolLoadSize), .loadOut(poolLoadOut), .loadEnable(poolLoadEnable),
+ 		.writeAddr(poolWriteAddr), .writeOut(poolWriteOut), .writeEnable(poolWriteEnable),
+		.done(poolDone));
+**/
+	always @(posedge clk) begin
+	        if(reset)begin
+	        	//stage 1 load # of layers
+	       	 	dmaEnable = 1;
+	       	 	address = initialAddr; 
+	        	readNoOfLayersSignal = 1;
+	        	// initial signals 
+	        	imgSize = 32;
+	        	convDone = 0; 
+	        	poolDone = 0; 
+	        	counter = 0;
+	        	filterCounter = 0;  
+	        	prevImagesCount = 1;
+	        	prevFiltersCount = 1; 
+	        	readNoOfLayersSignal = 0;
+	        	readLayerDataSignal = 0; 
+	        	readFilterSignal = 0; 
+	        	readImageSignal = 0; 
+	        	saveImageSignal = 0; 
+	        	doneReadNoOfLayersSignal = 0;    
+	        	doneReadLayerDataSignal = 0;    
+	        	doneReadFilterSignal = 0; 
+	        	doneReadImageSignal = 0;
+	        	donesaveImageSignal = 0; 
+        end
+    end
     integer i; 
+    always @(negedge clk)begin
+    	    if (enable && (opDone || poolDone || convDone))begin
+		opDone = 0;
+            	poolEnable = 0; 
+            	convEnable = 0;
+	    end
+	    if(enable && (poolDone || convDone))begin
+	            poolDone = 0; 
+	            convDone =0; 
+	    end
+    end
     always @(posedge clk) begin
-        opDone = opDone ||  poolDone; 
+
         if(enable && (poolDone || convDone)) begin
-            poolDone = 0; 
-            convDone =0; 
+            
             imgAddr = prevImagesCount * imgSize * imgSize; // address of first intermidiat result for next layer    
             if(layerType)begin //conv 
                  address = address + (noOfFilters * filterSize * filterSize); 
@@ -107,10 +132,10 @@ address, memFetchResult ,imgSize, fetchedImage,
             doneReadLayerDataSignal = 0;
         end
 
-        if (enable && opDone)begin // there is an operation done 
-            opDone = 0;
+        if (enable && (opDone || poolDone || convDone))begin // there is an operation done 
+    /**        opDone = 0;
             poolEnable = 0; 
-            convEnable = 0; 
+            convEnable = 0; */
             if(readNoOfLayersSignal)begin // got number of layers 
                 noOfLayers = memFetchResult[0];
                 layerCounter = 0; 
@@ -130,14 +155,13 @@ address, memFetchResult ,imgSize, fetchedImage,
                 begin
                     address = address + 1; 
                     dmaEnable = 1;
-                    dmaRWSignal = 1; //read
-                    //raed = 1;  
+                    loadEnable = 1; //read
                     readLayerDataSignal = 1; 
                 end  
                 else begin 
                     convEnable = layerType;
                     poolEnable = ! layerType;
-                    dmaRWSignal = poolDmaRW; 
+                    loadEnable = poolDmaRW; 
                     if(convEnable) begin
                         address = address + 3; 
                     end
@@ -150,7 +174,6 @@ address, memFetchResult ,imgSize, fetchedImage,
                 end 
             end else begin
                 done = 1;
-                opDone = 0;  
             end
             
         end
