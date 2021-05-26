@@ -6,7 +6,7 @@ module CNN (clk, enable,reset);
     parameter ADDR_WIDTH = 20;
     parameter  BLOCK_SIZE = 150;// output array size 
     reg dmaRW; 
-    reg dmaEnable
+    reg dmaEnable;
     reg [ADDR_WIDTH-1:0] address; 
     reg [DATA_WIDTH-1:0] dmaInput;
     reg [DATA_WIDTH-1:0] dmaOut [0:BLOCK_SIZE-1];
