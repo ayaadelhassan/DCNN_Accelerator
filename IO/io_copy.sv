@@ -3,7 +3,7 @@ input  loadCNN, loadFC, loadImg,clk;
 output reg finishCNN,finishFC,finishImg,done;
 output reg [15:0] CNNData [50703:0];
 output reg [15:0] FCData  [11217:0];
-output reg [0:16383] IMGDAat;
+output reg [15:0] IMGDAat[1023:0];
 integer data_file;
 integer weights_file;
 integer bias_file;
@@ -209,17 +209,16 @@ begin
 decompress=1;
 end
 
-always @(posedge clk && loadImg )  //need two clocks clk =50 falling
-begin
-decompress=1;
-end
-
 always @(negedge clk && loadImg)
 begin
-   for(m=0;m<16384;m=m+1)
+     for(m=0;m<16384;m=m+16)
+   begin
+    for(n=0;n<16;n=n+1)
     begin
-    IMGDAat[m] = imagebuffer[m];
+    IMGDAat[s][n]=imagebuffer[m+n];
     end
+     s=s+1;
+   end
    
    finishImg = 1;
 end
