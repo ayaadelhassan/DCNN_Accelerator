@@ -118,7 +118,7 @@ module fc_mains(enable,
                 
                 if (i<84)begin
                     if (it<120)begin
-                        weights1R[(i*120)+it] <= mem[weightsAddress1 + it];
+                        weights1R[(i*120)+it] <= mem[weightsAddress1 + (i*120) + it];
                         it <= it+1;
                     end
                     else begin
@@ -171,7 +171,7 @@ module fc_mains(enable,
                 
                 if (i<84)begin
                     if (it<120)begin
-                        weights2R[(i*120)+it] <= mem[weightsAddress2 + it];
+                        weights2R[(i*120)+it] <= mem[weightsAddress2 + (i*120) + it];
                         it <= it+1;
                     end
                     else begin
