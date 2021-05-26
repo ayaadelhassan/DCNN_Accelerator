@@ -5,31 +5,27 @@ module PoolLayer (clk,enable, reset, imagesCount, imgSize, address, done , loadI
     input clk, enable, reset, opDone; 
     input imagesCount,  address; // address of first image in intermidiat layer
     input image; 
-    inout imgSize; 
+    input imgSize; 
     output done, loadImgEnable,loadImgAddrr,RW;  
     reg RW; 
-    reg [DATA_SIZE-1:0] image [n*n-1:0];
+    reg signed [DATA_SIZE-1:0] image [n*n-1:0];
     reg [DATA_SIZE-1:0]imagesCount, imgSize, address, loadImgAddrr; 
-    reg [DATA_SIZE-1:0] pooledImg[n*n-1:0];
+    reg signed [DATA_SIZE-1:0] pooledOut;
     reg [DATA_SIZE-1:0] saveImgAddr; 
     reg poolDone ,opDone,donePooling,poolEnable,done, loadImgEnable; 
     reg doneReadImage,loadImageEnable,readImageSignal;
     
-    pool_image_clked poolImg (.clk(clk), .reset(reset), .enable(poolEnable), .imgSize(imgSize), .image(image), .windowSize(16'd2), .pooledOut(pooledImg), .done(poolDone));
+    pool_image_clked poolImg (.clk(clk), .reset(reset), .enable(poolEnable), .imgSize(imgSize), .image(image), .windowSize(16'd2), .pooledOut(pooledOut), .done(poolDone));
     integer counter; 
-    initial begin
-         counter = 0; 
-    end 
-    
     always @(posedge clk) begin
         if(reset)begin
              poolEnable = 0; 
-            //  poolDone = 1; 
+	     counter = 0;
+            //  SSSSpoolDone = 1; 
              done = 0 ;  
         end
         if(enable)begin
-            opDone = opDone || poolDone; 
-            if(opDone)begin 
+            if(opDone || poolDone)begin 
                 opDone = 0; 
                 poolDone = 0;
                 if(readImageSignal == 1) begin
@@ -60,8 +56,7 @@ module PoolLayer (clk,enable, reset, imagesCount, imgSize, address, done , loadI
                     end
                 end else begin
                     done =1; 
-                    opDone = 0; 
-
+		    counter = 0;
                 end
             end
             

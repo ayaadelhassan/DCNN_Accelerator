@@ -27,7 +27,6 @@ always @(load)  begin
     loadFC=1;
     loadImg=1;
 end
-
-
+//////////////////////////////////////////////
 endmodule
 

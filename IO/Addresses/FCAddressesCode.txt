@@ -11,7 +11,7 @@ End address -> 10283
 
 --output1(layer2)
 10284:10367 -> out1
-10368:10451 -> first col of weights2
+10368 :10451 -> first col of weights2
 10452 -> first col bias
 To be repeated 10 times
 End address -> 11217

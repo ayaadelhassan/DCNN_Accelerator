@@ -8,7 +8,7 @@ module load_block (clk, enable, size, address, dmaOut, dmaAddr, out, done);
     output reg done; 
     output reg [MEM_ADDR_SIZE - 1 : 0] dmaAddr;
     input  [MEM_ADDR_SIZE - 1 : 0] address;
-    input [DATA_SIZE-1:0] dmaOut [0:BLOCK_SIZE-1];
+    input signed [DATA_SIZE-1:0] dmaOut [0:BLOCK_SIZE-1];
     wire [DATA_SIZE-1:0] iterations;
     integer counter;
     integer k; 
