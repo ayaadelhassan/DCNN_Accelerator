@@ -3,7 +3,7 @@ module convolution_layer(clk, enable, reset, loadDone,
 		filtersNumber, filterSize, filterAddress, 
 		loadAddr, loadSize, loadOut,
 		writeAddr, writeOut, writeEnable,
-		loadPrevDataAddr, loadPrevDataOut, loadPrevDataEnable,
+		loadPrevDataOut, loadPrevDataEnable,
 		loadEnable, done);
 
 	localparam DATA_SZ = 16;
@@ -28,7 +28,6 @@ module convolution_layer(clk, enable, reset, loadDone,
 	input loadDone;
 	
 	output reg loadPrevDataEnable;
-	output reg [ADDR_SZ-1:0] loadPrevDataAddr;  
 	input signed [DATA_SZ -1: 0] loadPrevDataOut[0:24];
 	
 
@@ -67,9 +66,7 @@ module convolution_layer(clk, enable, reset, loadDone,
 	always @(posedge clk)   // Loops on the images and filter then do the convolution
 	begin
 		
-		if(convDone && convEnable) begin
-			convEnable = 0;
-			writeEnable = 0;			
+		if(convDone) begin
 			isFilterLoaded = 0;
 			if(filterCounter == filterPerImage) begin
 				filterCounter = 0;
@@ -80,12 +77,22 @@ module convolution_layer(clk, enable, reset, loadDone,
 				end
 			end
 		end
-		if (convEnable)begin
+		
+		if(writeEnable) begin
+			writeEnable = 0;
+			if(isImageLoaded) begin
+				writeAddr = writeAddr + 1;
+			end else begin
+				writeAddr = imgsAddress + imgSize * imgSize * imgsNumber;
+			end
+		end
+
+		if(convEnable)begin
 			writeEnable = 1 ;
-			writeAddr = writeAddr + 1; 
+			convEnable = 0; 
 		end	
 		
-		if(loadDone && loadingOp) begin
+		if((loadDone || loadPrevDataEnable) && loadingOp) begin
 			if(loadType == 0) begin
 				imgCounter = imgCounter + 1;
 				currentImgAddress = currentImgAddress + imgSize*imgSize;
@@ -96,10 +103,10 @@ module convolution_layer(clk, enable, reset, loadDone,
 				filterCounter = filterCounter + 1;
 				currentfilterAddress = currentfilterAddress + filterSize*filterSize;
 				isFilterLoaded = 1;
-				filter = loadOut[0:24];
-				
+				filter = loadOut[0:24];	
 			end else begin
-				prevData = loadOut[0];
+				prevData = loadPrevDataOut[0];
+				loadPrevDataEnable = 0;
 			end
 
 			loadingOp = 0;
@@ -123,7 +130,7 @@ module convolution_layer(clk, enable, reset, loadDone,
 				isImageLoaded = 0;
 				currentfilterAddress = filterAddress;
 				isFilterLoaded = 0;
-				writeAddr = imgsAddress + imgSize * imgSize * imgsNumber - 1;
+				writeAddr = imgsAddress + imgSize * imgSize * imgsNumber;
 			end
 			
 			if(isImageLoaded == 0) begin
@@ -132,17 +139,16 @@ module convolution_layer(clk, enable, reset, loadDone,
 				loadSize = imgSize;
 				loadAddr = currentImgAddress;
 				loadType = 0;
-			end else if(isFilterLoaded == 0) begin
+			end else if(isFilterLoaded == 0 && writeEnable == 0) begin
 				loadingOp = 1;
 				loadEnable = 1;
 				loadSize = filterSize;
 				loadAddr = currentfilterAddress;
 				loadType = 1;
-			end else begin
+			end else if(writeEnable == 0) begin
 				convEnable = 1;
 				loadingOp = 1;
 				loadPrevDataEnable = 1;
-				loadPrevDataAddr = writeAddr;
 				loadType = 2;
 			end
 			
