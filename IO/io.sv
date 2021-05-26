@@ -1,9 +1,9 @@
 module io(loadCNN, loadFC, loadImg, finishCNN, finishFC, finishImg, CNNData,FCData,IMGDAat,clk,done);
-input  loadCNN, loadFC, loadImg,clk;
-output reg finishCNN,finishFC,finishImg,done;
+input loadCNN, loadFC, loadImg,clk;
+output reg finishCNN=0,finishFC =0,finishImg =0,done=0;
 output reg [15:0] CNNData [50703:0];
 output reg [15:0] FCData  [11217:0];
-output reg [0:16383] IMGDAat;
+output reg [16383:0] IMGDAat;
 integer data_file;
 integer weights_file;
 integer bias_file;
@@ -13,13 +13,14 @@ integer j=0;
 integer k=0;
 integer s=0;
 integer m,n;
+integer b=0;
 reg [15:0] layer1weights [119:0][83:0];
 reg [15:0] layer1biases [83:0];
 reg [15:0] layer2weights [83:0][9:0];
 reg [15:0] layer2biases [9:0];
 //////////////////////////
 reg decompress;
-wire [0:16383] imagebuffer;
+wire [16383:0] imagebuffer;
 decompression de (decompress,imagebuffer);
 `define NULL 0
 always @(loadFC)  begin
@@ -209,18 +210,13 @@ begin
 decompress=1;
 end
 
-always @(posedge clk && loadImg )  //need two clocks clk =50 falling
-begin
-decompress=1;
-end
-
 always @(negedge clk && loadImg)
 begin
-   for(m=0;m<16384;m=m+1)
+   for(m=16383;m>=0;m=m-1)
     begin
-    IMGDAat[m] = imagebuffer[m];
+    IMGDAat[b] = imagebuffer[m];
+    b=b+1;
     end
-   
    finishImg = 1;
 end
 

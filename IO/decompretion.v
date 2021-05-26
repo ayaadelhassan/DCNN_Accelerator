@@ -1,11 +1,11 @@
 module decompression(decompress,imagebuffer);
-reg [15:0] inputtext[1630:0];
+reg [15:0] inputtext[0:1630];
 integer count,bit,j,p,k;
 input decompress;
-output reg [0:16383] imagebuffer ;
+output reg [16383:0] imagebuffer ;
 always @(decompress) begin
 $readmemb("commdata.txt",inputtext);
-k=0;
+k=16383;
 for(j=0;j<1631;j=j+1)
    begin
      count=inputtext[j][14:0];
@@ -14,7 +14,7 @@ for(j=0;j<1631;j=j+1)
    for(p=0;p<count;p=p+1)
      begin
       imagebuffer[k]=bit;
-      k=k+1;
+      k=k-1;
       end
    end
 end
