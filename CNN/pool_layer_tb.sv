@@ -1,10 +1,11 @@
 module pool_layer_tb;
-    	reg clk, reset, loadEnable, dmaEnable, rw, loadDone;
+    	reg clk, reset, loadEnable, dmaEnable, rw, loadDone, writeEnable;
 	reg [15:0] address;
+	reg [15:0] loadBlockAddress;
 	reg [15:0] inputData;
 	reg signed [15:0] dmaOut [0:24];
 	reg [15:0] blockSize;
-	reg [15:0] initAddr;
+	reg [15:0] loadAddr;
         reg signed [15: 0] loadOut[0:1023]; 
 
 	reg pool_enable, pl_done;
@@ -13,32 +14,38 @@ module pool_layer_tb;
 	reg [15:0] imgSize;
 	reg [15:0] imgsAddress;
 	reg [15:0] windowSize;
+	reg [15:0] writeAddr;
+
 
 	
     	localparam period = 100;
 
     	//convolution_layer conv(clk, enable, reset, )
 	DMA dma(.clk(clk), .enable(dmaEnable), .RW(rw), .address(address), .inputDATA(inputData), .outputData(dmaOut));
-        load_block loadB (.clk(clk), .enable(loadEnable), .size(blockSize), .address(initAddr), .dmaAddr(address), .dmaOut(dmaOut), .out(loadOut) ,.done(loadDone));
+        load_block loadB (.clk(clk), .enable(loadEnable), .size(blockSize), .address(loadAddr), .dmaAddr(loadBlockAddress), .dmaOut(dmaOut), .out(loadOut) ,.done(loadDone));
 
 
 	pool_layer pl(.clk(clk), .enable(pool_enable), .reset(reset), .loadDone(loadDone),
 		.imgsNumber(imgsNumber), .imgSize(imgSize), .imgsAddress(imgsAddress), .windowSize(windowSize), 
-		.loadAddr(initAddr), .loadSize(blockSize), .loadOut(loadOut),
+		.loadAddr(loadAddr), .loadSize(blockSize), .loadOut(loadOut),
+		.writeAddr(writeAddr), .writeOut(inputData), .writeEnable(writeEnable),
 		.loadEnable(loadEnable), .done(pl_done));
 
-
+	always@ (posedge clk)begin
+		dmaEnable = writeEnable || loadEnable ; 
+		address = (writeEnable) ? writeAddr : loadBlockAddress;
+		rw = loadEnable;
+	end
 	initial begin
 		$display($time, " << Starting the Simulation >>");
 		clk = 0;
 		dmaEnable = 1;
 		rw = 1;
-		inputData = 0;
 		reset = 1;
 
 		pool_enable = 0;
 		imgsNumber = 3;
-		imgSize = 10;
+		imgSize = 4;
 		imgsAddress = 0;
 		
 		windowSize = 2;

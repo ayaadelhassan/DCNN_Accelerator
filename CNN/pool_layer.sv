@@ -1,8 +1,9 @@
 
 module pool_layer(clk, enable, reset, loadDone,
 		imgsNumber, imgSize, imgsAddress, windowSize, 
-		loadAddr, loadSize, loadOut,
-		loadEnable, done);
+		loadAddr, loadSize, loadOut, loadEnable,
+ 		writeAddr, writeOut, writeEnable,
+		done);
 
 	localparam DATA_SZ = 16;
 	localparam ADDR_SZ = 16;
@@ -15,6 +16,12 @@ module pool_layer(clk, enable, reset, loadDone,
 	input reg [ADDR_SZ-1:0] imgsAddress;
 
 	output reg done;
+
+	// Write Block parameters
+	output reg writeEnable;
+	output reg [ADDR_SZ-1:0] writeAddr;  
+	output reg signed [DATA_SZ -1: 0] writeOut;
+
 
 	// Load Block parameters
 	output reg loadEnable;
@@ -37,11 +44,15 @@ module pool_layer(clk, enable, reset, loadDone,
 	pool_image_clked pi(.clk(clk), .reset(reset), .enable(poolEnable), 
 				.imgSize(imgSize), .image(image), .windowSize(windowSize),
 		 		.pooledOut(pooled), .done(poolDone));
-
 	always @(posedge clk)   // Loops on the images and filter then do the convolution
 	begin
-		
+		if (poolEnable)begin
+			writeEnable = 1 ;
+			writeAddr = writeAddr + 1 ; 
+			writeOut = pooled;
+		end
 		if(poolDone && poolEnable) begin
+			writeEnable = 0;
 			poolEnable = 0;
 			isImageLoaded = 0;
 			if(imgCounter == imgsNumber) begin
@@ -59,6 +70,7 @@ module pool_layer(clk, enable, reset, loadDone,
 		end
 		
 		if(reset) begin
+			writeEnable = 0;
 			done = 0;
 			imgCounter = 0;
 			loadingOp = 0;
@@ -69,6 +81,7 @@ module pool_layer(clk, enable, reset, loadDone,
 			if(imgCounter == 0) begin
 				currentImgAddress = imgsAddress;
 				isImageLoaded = 0;
+				writeAddr = imgsAddress + imgSize * imgSize * imgsNumber - 1;  
 			end
 			
 			if(isImageLoaded == 0) begin
