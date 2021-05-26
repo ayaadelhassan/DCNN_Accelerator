@@ -36,8 +36,6 @@ module pool_layer(clk, enable, reset, loadDone,
 	reg loadingOp, isImageLoaded;
 	reg [DATA_SZ-1:0] imgCounter;
 	reg [ADDR_SZ-1:0] currentImgAddress;
-	
-	reg [DATA_SZ-1:0] pooled;
 
 	reg poolEnable, poolDone;
 
