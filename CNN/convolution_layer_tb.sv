@@ -1,5 +1,5 @@
 module convolution_layer_tb;
-    	reg clk, reset, loadEnable, dmaEnable, rw, loadDone, writeEnable;
+    	reg clk, reset, loadEnable, dmaEnable, rw, loadDone, writeEnable, loadPrevDataEnable;
 	reg [15:0] address;
 	reg [15:0] inputData;
 	reg signed [15:0] dmaOut [0:24];
@@ -30,12 +30,13 @@ module convolution_layer_tb;
 		.filtersNumber(filtersNumber), .filterSize(filterSize), .filterAddress(filterAddress), 
 		.loadAddr(loadAddr), .loadSize(blockSize), .loadOut(loadOut),
 		.writeAddr(writeAddr), .writeOut(inputData), .writeEnable(writeEnable),
+		.loadPrevDataOut(dmaOut), .loadPrevDataEnable(loadPrevDataEnable),
 		.loadEnable(loadEnable), .done(cl_done));
 
-	always@ (writeEnable, loadEnable, writeAddr, loadBlockAddress)begin
-		dmaEnable = writeEnable || loadEnable ; 
-		address = (writeEnable) ? writeAddr : loadBlockAddress;
-		rw = loadEnable;
+	always@ (writeEnable, loadEnable, writeAddr, loadBlockAddress, loadPrevDataEnable)begin
+		dmaEnable = writeEnable || loadEnable || loadPrevDataEnable; 
+		address = (writeEnable || loadPrevDataEnable) ? writeAddr : loadBlockAddress;
+		rw = loadEnable || loadPrevDataEnable;
 	end
 	initial begin
 		$display($time, "<< Starting the Simulation >>");
