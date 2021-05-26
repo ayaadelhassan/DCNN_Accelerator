@@ -66,36 +66,58 @@ module fc_main(enable,
     // assign outputNodes2 = outputNodes2R;
     // assign weights2 = weights2R;
     // assign biases2 = biases2R;
-
-    integer i, j, it;
+    reg [15:0] i, j, it , k;
     always @(posedge clk) begin
+        if (reset=1)begin
+            i=0;
+            j=0;
+            it=0;
+            k=0;
+        end
         if (enable) begin
-            
             enable1      = 0;
             //finished1    = 0;
             //finished2    = 0;
             write_enable = 0;
             read_enable = 1;
             address     = 0;
-            for(j=0;j<120;j++) begin
+            if(j<120) begin
             inputNodes1R[j] = data_out[(j*16)+:16];
+            j=j+1;    
             end
             
-            for(i = 0; i < 84; i = i + 1) begin
-                address          = i * 120 + 120;
-                for (it = 0; it < 120; it = it + 1) begin
-                    weights1R[(i*120)+it] = data_out[(it*16)+:16];
-                end
-            end
-            address = 120 + 84 * 120;
 
-            for(j=0;j<84;j++) begin
-             biases1R[j] = data_out[(j*16)+:16];
+            // for(j=0;j<120;j++) begin
+            // inputNodes1R[j] = data_out[(j*16)+:16];
+            // end
+            if(i<84)begin
+            address= i * 120 + 120; 
+            if(it<120)begin
+                weights1R[(i*120)+it] = data_out[(it*16)+:16];
+                it=it+1;
             end
+            else begin
+                i=i+1;
+            end
+            end
+            // for(i = 0; i < 84; i = i + 1) begin
+                
+            //     for (it = 0; it < 120; it = it + 1) begin
+            //         weights1R[(i*120)+it] = data_out[(it*16)+:16];
+            //     end
+            // end
+            address = 120 + 84 * 120;
+            if (k<84)begin
+             biases1R[k] <= data_out[(k*16)+:16]; 
+             k=k+1;  
+            end
+            // for(j=0;j<84;j++) begin
+            //  biases1R[j] = data_out[(j*16)+:16];
+            // end
            
-            read_enable=0;
-            enable1 = 1;
-            write_enable=1;
+            read_enable <=0;
+            enable1 <= 1;
+            write_enable <=1;
             
             // for(i = 0; i < 10; i = i + 1) begin
                                 
