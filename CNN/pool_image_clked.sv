@@ -6,7 +6,8 @@ module pool_image_clked (clk, reset, enable, imgSize, image, windowSize, pooledO
 	input [15:0] imgSize;
 	input [15:0] windowSize;
 	input clk, reset, enable;
-	output signed [15:0] pooledOut ;
+	output pooledOut;
+	reg signed [15:0] pooledOut ;
 	reg signed [15:0] window [0:24];
 	output done ;
 	reg done;
@@ -31,6 +32,11 @@ module pool_image_clked (clk, reset, enable, imgSize, image, windowSize, pooledO
     pool_window pw(windowSize, window, pooledOut);
     integer i,j,x,y,f,k;
     always @(posedge clk) begin
+	if(done) begin
+		done = 0;
+		i = 0;
+		j = 0;
+	end
         if (reset) begin
             	i <= 0 ;
             	j <= 0 ;

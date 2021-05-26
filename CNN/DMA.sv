@@ -7,9 +7,9 @@ input [ADDR_WIDTH-1:0] address;
 input [DATA_WIDTH-1:0] inputDATA; 
 output outputData;
 
-reg [DATA_WIDTH-1:0] outputData [0:BLOCK_SIZE-1];
+reg signed [DATA_WIDTH-1:0] outputData [0:BLOCK_SIZE-1];
 
-reg [DATA_WIDTH -1 : 0]ram [0:(BLOCK_SIZE * 100)];
+reg signed [DATA_WIDTH -1 : 0]ram [0:(BLOCK_SIZE * 100)];
 
 
 // RAM ram(clk, enable,address,RW,ramIn,ramOut);
