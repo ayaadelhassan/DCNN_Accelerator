@@ -10,25 +10,25 @@ cModel Technology
 dD:/college/cmp3/second/vlsi/req
 vChip
 Z0 DXx6 sv_std 3 std 0 22 AD7iAPLo6nTIKk<N0eo=D3
-Z1 !s110 1622039442
+Z1 !s110 1622048086
 !i10b 1
-!s100 `HNl12ahO0YU_PmcOSLNT3
-IMbB6IgTN_[gHY0C@L?k:J2
+!s100 4kKWY=iYe1iB;J8fE^Lc83
+IidCoEg;1Cfc3`7115m6^T3
 Z2 VDg1SIo80bB@j0V0VzS_@n1
 !s105 Chip_sv_unit
 S1
 Z3 dD:/college/cmp3/second/vlsi/DCNN_Accelerator/IO
-w1622039346
-8D:/college/cmp3/second/vlsi/DCNN_Accelerator/IO/Chip.sv
-FD:/college/cmp3/second/vlsi/DCNN_Accelerator/IO/Chip.sv
+w1622048075
+8D:\college\cmp3\second\vlsi\DCNN_Accelerator\IO\Chip.sv
+FD:\college\cmp3\second\vlsi\DCNN_Accelerator\IO\Chip.sv
 L0 1
 Z4 OV;L;10.5b;63
 r1
 !s85 0
 31
-Z5 !s108 1622039442.000000
-!s107 D:/college/cmp3/second/vlsi/DCNN_Accelerator/IO/Chip.sv|
-!s90 -reportprogress|300|-work|work|-sv|-stats=none|D:/college/cmp3/second/vlsi/DCNN_Accelerator/IO/Chip.sv|
+Z5 !s108 1622048086.000000
+!s107 D:\college\cmp3\second\vlsi\DCNN_Accelerator\IO\Chip.sv|
+!s90 -reportprogress|300|-work|work|-sv|-stats=none|D:\college\cmp3\second\vlsi\DCNN_Accelerator\IO\Chip.sv|
 !i113 1
 Z6 o-work work -sv
 Z7 tCvgOpt 0
@@ -48,11 +48,11 @@ R4
 r1
 !s85 0
 31
-R5
+Z8 !s108 1622048085.000000
 !s107 D:/college/cmp3/second/vlsi/DCNN_Accelerator/IO/cnn_ram.v|
 !s90 -reportprogress|300|-work|work|-stats=none|D:/college/cmp3/second/vlsi/DCNN_Accelerator/IO/cnn_ram.v|
 !i113 1
-Z8 o-work work
+Z9 o-work work
 R7
 n@c@n@nmemory
 vdecompression
@@ -62,7 +62,7 @@ R1
 IOY7E42E@fUA=b0^DH951?0
 R2
 R3
-Z9 w1622035161
+w1622035161
 8D:/college/cmp3/second/vlsi/DCNN_Accelerator/IO/decompretion.v
 FD:/college/cmp3/second/vlsi/DCNN_Accelerator/IO/decompretion.v
 L0 1
@@ -74,16 +74,16 @@ R5
 !s107 D:/college/cmp3/second/vlsi/DCNN_Accelerator/IO/decompretion.v|
 !s90 -reportprogress|300|-work|work|-stats=none|D:/college/cmp3/second/vlsi/DCNN_Accelerator/IO/decompretion.v|
 !i113 1
-R8
+R9
 R7
 vFCmemory
 R1
 !i10b 1
-!s100 o6z@[e7I^HmjV;:D4L9MK3
-I1PoEFSgl7DSI]K0jcccch1
+!s100 31JGN1j5W<]DLFgET=?Fe1
+IG>6go:G94_k;36ZAB7m[k1
 R2
 R3
-R9
+w1622040029
 8D:\college\cmp3\second\vlsi\DCNN_Accelerator\IO\fc_ram.v
 FD:\college\cmp3\second\vlsi\DCNN_Accelerator\IO\fc_ram.v
 L0 2
@@ -95,35 +95,35 @@ R5
 !s107 D:\college\cmp3\second\vlsi\DCNN_Accelerator\IO\fc_ram.v|
 !s90 -reportprogress|300|-work|work|-stats=none|D:\college\cmp3\second\vlsi\DCNN_Accelerator\IO\fc_ram.v|
 !i113 1
-R8
+R9
 R7
 n@f@cmemory
 vio
 R0
 R1
 !i10b 1
-!s100 lIXZ9QaPU<G]eI77LYB;z0
-I;7jCif2Ul?RMX=aiB]6mD3
+!s100 F4Xc3Y1okhnA?mSV@=ZKP2
+ILLg:BV=o@WYh:dn6QRdD>1
 R2
 !s105 io_sv_unit
 S1
 R3
-w1622038713
-8D:/college/cmp3/second/vlsi/DCNN_Accelerator/IO/io.sv
-FD:/college/cmp3/second/vlsi/DCNN_Accelerator/IO/io.sv
+w1622047697
+8D:\college\cmp3\second\vlsi\DCNN_Accelerator\IO\io.sv
+FD:\college\cmp3\second\vlsi\DCNN_Accelerator\IO\io.sv
 L0 1
 R4
 r1
 !s85 0
 31
 R5
-!s107 D:/college/cmp3/second/vlsi/DCNN_Accelerator/IO/io.sv|
-!s90 -reportprogress|300|-work|work|-sv|-stats=none|D:/college/cmp3/second/vlsi/DCNN_Accelerator/IO/io.sv|
+!s107 D:\college\cmp3\second\vlsi\DCNN_Accelerator\IO\io.sv|
+!s90 -reportprogress|300|-work|work|-sv|-stats=none|D:\college\cmp3\second\vlsi\DCNN_Accelerator\IO\io.sv|
 !i113 1
 R6
 R7
 vmemory
-R1
+!s110 1622048085
 !i10b 1
 !s100 VaiNPDG`fmh>8CO:@WVAX2
 IFcVTD_d0llCii6AOeZXk_2
@@ -137,9 +137,9 @@ R4
 r1
 !s85 0
 31
-R5
+R8
 !s107 D:/college/cmp3/second/vlsi/DCNN_Accelerator/IO/ram.v|
 !s90 -reportprogress|300|-work|work|-stats=none|D:/college/cmp3/second/vlsi/DCNN_Accelerator/IO/ram.v|
 !i113 1
-R8
+R9
 R7
