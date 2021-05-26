@@ -31,7 +31,7 @@ module pool_layer_tb;
 		.writeAddr(writeAddr), .writeOut(inputData), .writeEnable(writeEnable),
 		.loadEnable(loadEnable), .done(pl_done));
 
-	always@ (posedge clk)begin
+	always@ (writeEnable, loadEnable, writeAddr, loadBlockAddress)begin
 		dmaEnable = writeEnable || loadEnable ; 
 		address = (writeEnable) ? writeAddr : loadBlockAddress;
 		rw = loadEnable;

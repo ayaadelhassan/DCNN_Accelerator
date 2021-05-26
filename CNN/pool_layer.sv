@@ -43,14 +43,9 @@ module pool_layer(clk, enable, reset, loadDone,
 
 	pool_image_clked pi(.clk(clk), .reset(reset), .enable(poolEnable), 
 				.imgSize(imgSize), .image(image), .windowSize(windowSize),
-		 		.pooledOut(pooled), .done(poolDone));
+		 		.pooledOut(writeOut), .done(poolDone));
 	always @(posedge clk)   // Loops on the images and filter then do the convolution
 	begin
-		if (poolEnable)begin
-			writeEnable = 1 ;
-			writeAddr = writeAddr + 1 ; 
-			writeOut = pooled;
-		end
 		if(poolDone && poolEnable) begin
 			writeEnable = 0;
 			poolEnable = 0;
@@ -60,6 +55,10 @@ module pool_layer(clk, enable, reset, loadDone,
 			end
 		end
 		
+		if (poolEnable)begin
+			writeEnable = 1 ;
+			writeAddr = writeAddr + 1; 
+		end		
 		if(loadDone && loadingOp) begin
 			imgCounter = imgCounter + 1;
 			currentImgAddress = currentImgAddress + imgSize*imgSize;
