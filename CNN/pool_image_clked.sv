@@ -2,7 +2,7 @@ module pool_image_clked (clk, reset, enable, imgSize, image, windowSize, pooledO
 
 	localparam n = 32;
 	
-	input signed [15:0] image [0:n*n-1];
+	input reg signed [15:0] image [0:n*n-1];
 	input [15:0] imgSize;
 	input [15:0] windowSize;
 	input clk, reset, enable;
