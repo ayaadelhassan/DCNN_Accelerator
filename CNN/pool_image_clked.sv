@@ -30,12 +30,16 @@ module pool_image_clked (clk, reset, enable, imgSize, image, windowSize, pooledO
 
 
     pool_window pw(windowSize, window, pooledOut);
-    integer i,j,x,y,f,k;
+    integer i,j,x,y,f,k,l;
     always @(posedge clk) begin
 	if(done) begin
 		done = 0;
 		i = 0;
 		j = 0;
+		for(k=0;k<25;k=k+1) begin
+        	    	window[k] <= 0;
+		end
+		l = l + 1;
 	end
         if (reset) begin
             	i <= 0 ;
@@ -46,7 +50,7 @@ module pool_image_clked (clk, reset, enable, imgSize, image, windowSize, pooledO
 		end
 
         end
-        if (enable) begin
+        if (enable && l == 0) begin
             	f = 0;
             	for(x=i;x<i+windowSize;x++) begin
 			for(y=0;y<windowSize;y++) begin
@@ -67,6 +71,7 @@ module pool_image_clked (clk, reset, enable, imgSize, image, windowSize, pooledO
             
         end
         
+	l = 0;
     end 
 
 
