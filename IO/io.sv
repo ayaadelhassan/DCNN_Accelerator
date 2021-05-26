@@ -1,6 +1,6 @@
-module io(loadCNN, loadFC, loadImg, finishCNN, finishFC, done, CNNData,FCData,IMGDAat,clk);
+module io(loadCNN, loadFC, loadImg, finishCNN, finishFC, finishImg, CNNData,FCData,IMGDAat,clk,done);
 input  loadCNN, loadFC, loadImg,clk;
-output reg finishCNN,finishFC,done;
+output reg finishCNN,finishFC,finishImg,done;
 output reg [15:0] CNNData [50703:0];
 output reg [15:0] FCData  [11217:0];
 output reg [0:16383] IMGDAat;
@@ -214,7 +214,12 @@ begin
     begin
     IMGDAat[m] = imagebuffer[m];
     end
-   done = 1;
+   finishImg = 1;
+end
+
+always @(posedge clk && finishCNN && finishFC && finishImg)
+begin 
+done = 1;
 end
 
 endmodule
