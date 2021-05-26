@@ -2,39 +2,17 @@
 module fc_layer #(parameter numNodesIn = 5,
                   parameter numNodesOut = 3)
                  (enable,
+                 reset,
                   inputNodes,
                   outputNodes,
-                  weights, 
+                  weights,
                   biases,
                   finished,
                   clk);
-
-    // The address from which to start reading weights from dataory and another to start writing output.
-    // input [15:0] readAddress, writeAddress, weightsAddress, biasesAddress;
-    
-    // input wire[15:0] readAddress = 0;
-    // wire [15: 0] writeAddress   = readAddress + numNodesIn + numNodesIn * numNodesOut + numNodesOut;
-    // wire [15: 0] weightsAddress = readAddress + numNodesIn;
-    // wire [15: 0] biasesAddress  = readAddress + numNodesIn + numNodesIn * numNodesOut;
-    
-
-    // 5 nodes
-    // 5 * 3 weights
-    // 3 biases
-    // 3 o/p
-    // 3 * 1 weights
-    // 1 biases
-    // 1 o/p
     
     // enable to start working
-    input enable;
+    input enable, reset;
     input clk;
-    // //                 input nodes   total num of weights       biases      output nodes for writing
-    // reg [15: 0] data[0: numNodesIn + numNodesIn * numNodesOut + numNodesOut + numNodesOut];
-    // // The whole block for this operation
-    
-    // reg [15: 0] readdata[0: numNodesIn - 1]; // input nodes' weights
-    // // The block returned in every read operation (will be 120)
     
     // We read the input nodes once at the start
     input [15: 0] inputNodes[0: numNodesIn - 1];
@@ -45,38 +23,59 @@ module fc_layer #(parameter numNodesIn = 5,
     // Output signal when the layer finishes
     output reg finished;
     
-    integer i, j, it;
+    reg [10: 0] inputsI;
+    reg [10: 0] weightsI;
+    reg [10: 0] curWeightsI;
+    reg [10: 0] outputsI;
+    reg [10: 0] stage;
+
     always @(posedge clk) begin
-        // for (it = 0; it < numNodesIn; it = it + 1) begin
-        //     inputNodes[it] = data[it];
-        // end
+
         if (enable) begin
             
-            for (it = 0; it < numNodesIn; it = it + 1) begin
-                inputNodes[it] = data[it];
+            if (reset == 1) begin
+                stage = 1;
+            end
+
+            if (stage == 1) begin
+                weightsI <= 0;
+                inputsI <= 0;
+                outputsI <= 0;
+                stage = 2;
             end
             
-            for (j = 0; j < numNodesOut; j = j+1) begin
-                // Initialize current output node
-                outputNodes[j] = 0;
-                
-                address = j * numNodesIn + numNodesIn;
-                for (it = 0; it < numNodesIn; it = it + 1) begin
-                    weights[it] = data_out[it];
+            else if (stage == 2) begin
+                outputNodes[outputsI] <= 0;
+                inputsI <= 0;
+                curWeightsI <= 0;
+                stage = 3;
+            end
+            
+            else if (stage == 3) begin
+                outputNodes[outputsI] = outputNodes[outputsI] + inputNodes[inputsI] * weights[weightsI];
+                curWeightsI = curWeightsI + 1;
+                if(curWeightsI < numNodesIn) begin
+                    weightsI = weightsI + 1;
+                    inputsI = inputsI + 1;
                 end
-                // Read starting from weightsAddress (skip the first 5 nodes) +
-                //                   numNodesIn * j (go to the start of the weights of the current output node)
-                //  then read the numNodesIn(five) weights starting from that
-                // for (it = 0; it < numNodesIn; it = it + 1) begin
-                //     readdata[it] = data[weightsAddress + (numNodesIn * j) + it];
-                // end
-                
-                for (i = 0; i < numNodesIn; i = i+1) begin
-                    outputNodes[j] = outputNodes[j] + weights[i] * inputNodes[i];
+                else begin
+                    curWeightsI = curWeightsI - 1;
+                    weightsI = weightsI + 1;
+                    stage = 4;
                 end
-                
-                // Write the outputnode after adding its bias
-                //outputNodes[j] = outputNodes[j] + biases[j];
+            end
+
+            else if (stage == 4) begin
+                outputNodes[outputsI] = outputNodes[outputsI] + biases[outputsI];
+                outputsI = outputsI + 1;
+                if(outputsI < numNodesOut) begin
+                    stage = 2;
+                end
+                else
+                    stage = 5;
+            end
+            
+            else begin
                 finished = 1;
             end
             
