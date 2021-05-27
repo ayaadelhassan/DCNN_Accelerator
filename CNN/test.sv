@@ -32,17 +32,18 @@ module test ;
 	
 	cnn_controller cnn2(.clk(clk), .enable(CNNEnable), .reset(CNNreset), .orgLayerAddress(CNNinitialAddress), .orgImgAddress(CNNimgAddr), // initial input address
 	.memFetchResult(dmaOutputData) ,.orgImgSize(CNNImgSize), .imgSize(CNNOutImgSize) ,.fetchedImage(loadOut), 
-	.dmaEnable(CNNDmaEnable), .dmaDone(CnnDmaDone), .dmaAddress(CNNDmaAddress), .done(CNNDone) ,.loadImageEnable(loadEnable),.loadImageDone(loadDone) , .loadImgAddress(loadAddr), .loadEnable(CnnLoadEnable), .writeEnable(CnnWriteEnable));
+	.loadBlockAddress(loadBlockAddress),.dmaInput(dmaInputData),.dmaEnable(CNNDmaEnable), .dmaDone(CnnDmaDone), .dmaAddress(CNNDmaAddress),
+	.done(CNNDone) ,.loadImageEnable(loadEnable),.loadImageDone(loadDone) , .loadImgAddress(loadAddr), .loadEnable(CnnLoadEnable), .writeEnable(CnnWriteEnable));
 	
 	assign dmaEnable = loadEnable || CNNDmaEnable;
 	assign readWrite = CnnLoadEnable || loadEnable;
-        assign dmaAddress = loadEnable? loadAddr:CNNDmaAddress;
+    assign dmaAddress = loadEnable? loadAddr:CNNDmaAddress;
 
 	always @(posedge clk)begin 
 		if(reset)begin 
 			CNNinitialAddress = 0; 
-            CNNimgAddr = 50704; 
-			CNNImgSize =32;
+            		CNNimgAddr = 100; 
+			CNNImgSize =6;
                 end 
 	
 	end
