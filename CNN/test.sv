@@ -23,10 +23,13 @@ module test ;
 	reg [15:0] CNNOutImgSize;
 	reg [15:0] CNNimgAddr;
 	
+	reg write_enable;
 
+	assign write_enable = !readWrite;
 
+	CNNmemory dma(.data_out(dmaOutputData), .address(dmaAddress), .data_in(dmaInputData), .write_enable(write_enable), .clk(clk));
 
-	DMA dma(.clk(clk), .enable(dmaEnable), .RW(readWrite), .address(dmaAddress), .inputDATA(dmaInputData), .outputData(dmaOutputData));
+	//DMA dma(.clk(clk), .enable(dmaEnable), .RW(readWrite), .address(dmaAddress), .inputDATA(dmaInputData), .outputData(dmaOutputData));
 
 	load_block loadB (.clk(clk), .enable(loadEnable),.reset(reset), .size(CNNOutImgSize), .address(loadAddr), .dmaAddr(loadBlockAddress), .dmaOut(dmaOutputData), .out(loadOut) ,.done(loadDone));
 	
