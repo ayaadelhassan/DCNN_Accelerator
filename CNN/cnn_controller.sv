@@ -1,4 +1,3 @@
-
 module cnn_controller (clk, enable, reset, orgLayerAddress, orgImgAddress,
  memFetchResult ,orgImgSize, imgSize ,fetchedImage, loadBlockAddress, dmaInput,
  dmaEnable, dmaDone, dmaAddress, done ,loadImageEnable,loadImageDone , loadImgAddress, loadEnable, writeEnable);
@@ -74,7 +73,7 @@ pool_layer poolModule (.clk(clk), .enable(poolEnable), .reset(reset), .loadDone(
 
 convolution_layer convModule(.clk(clk), .enable(convEnable), .reset(reset), .loadDone(loadImageDone),
 		.imgsNumber(imgsCountBuffer), .imgSize(imgSizeBuffer), .imgsAddress(imgAddressBuffer), 
-		.filtersNumber(noOfFilters), .filterSize(filterSize), .filterAddress(layerAddressBuffer), 
+		.filtersNumber(noOfFilters), .filterSize(filterSize), .biasAddress(layerAddressBuffer), 
 		.loadAddr(convLoadImgAddress), .loadSize(convLoadSize), .loadOut(fetchedImage),
 		.writeAddr(convWriteAddress), .writeOut(convWriteOut), .writeEnable(convWriteEnable),
 		.loadPrevDataOut(memFetchResult), .loadPrevDataEnable(convLoadPrevDataEnable),

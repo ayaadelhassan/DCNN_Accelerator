@@ -27,28 +27,26 @@ module convolution_layer_tb;
 
 	convolution_layer cl(.clk(clk), .enable(conv_enable), .reset(reset), .loadDone(loadDone),
 		.imgsNumber(imgsNumber), .imgSize(imgSize), .imgsAddress(imgsAddress), 
-		.filtersNumber(filtersNumber), .filterSize(filterSize), .filterAddress(filterAddress), 
+		.filtersNumber(filtersNumber), .filterSize(filterSize), .biasAddress(filterAddress), 
 		.loadAddr(loadAddr), .loadSize(blockSize), .loadOut(loadOut),
 		.writeAddr(writeAddr), .writeOut(inputData), .writeEnable(writeEnable),
 		.loadPrevDataOut(dmaOut), .loadPrevDataEnable(loadPrevDataEnable),
 		.loadEnable(loadEnable), .done(cl_done));
 
-	always@ (writeEnable, loadEnable, writeAddr, loadBlockAddress, loadPrevDataEnable)begin
-		dmaEnable = writeEnable || loadEnable || loadPrevDataEnable; 
-		address = (writeEnable || loadPrevDataEnable) ? writeAddr : loadBlockAddress;
-		rw = loadEnable || loadPrevDataEnable;
-	end
+
+	assign address = (writeEnable || loadPrevDataEnable) ? writeAddr : loadBlockAddress;
+	assign dmaEnable = writeEnable || loadEnable || loadPrevDataEnable; 
+	assign rw = loadEnable || loadPrevDataEnable;
+	
 	initial begin
 		$display($time, "<< Starting the Simulation >>");
 		clk = 0;
-		dmaEnable = 1;
-		rw = 1;
 		reset = 1;
 
 		conv_enable = 0;
 		imgsNumber = 3;
-		imgSize = 10;
-		imgsAddress = 500;
+		imgSize = 8;
+		imgsAddress = 200;
 		
 		filtersNumber = 6;
 		filterSize = 5;
