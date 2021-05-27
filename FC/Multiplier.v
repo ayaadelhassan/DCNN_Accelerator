@@ -1,4 +1,4 @@
-module Multiplier #(parameter N = 5) (M,R,mulResult,clk,finish,enable,reset);
+module Multiplier #(parameter N = 16) (M,R,mulResult,clk,finish,enable,reset);
     input clk;
     input enable;
     input [N-1:0] M,R;
@@ -9,11 +9,9 @@ module Multiplier #(parameter N = 5) (M,R,mulResult,clk,finish,enable,reset);
     reg [(2*N):0] S;
     reg [(2*N):0] P;
     output reg [(2*N)-1:0] mulResult;
-    initial begin
-	i=0;
-    P={{N{1'b0}},R,1'b0};
-
-    end
+    reg signed [15:0] fixedMulResult;
+    reg fixedEnable;
+    fixed_point_modification #(.n(32),.m(10)) fp(.enable(fixedEnable),.result(mulResult),.modifiedOut(fixedMulResult));
 always @(posedge clk) begin
     if(enable) begin
         if (reset) begin
@@ -22,6 +20,7 @@ always @(posedge clk) begin
             P={{N{1'b0}},R,1'b0};
             i=0;
             finish=0;
+            fixedEnable=0;
         end
         else if (i<N) begin
             case (P[1:0])
@@ -36,6 +35,7 @@ always @(posedge clk) begin
         end
         else if(i>=N) begin
            mulResult = P[2*N:1];
+           fixedEnable=1;
            finish = 1;
         end
     end
