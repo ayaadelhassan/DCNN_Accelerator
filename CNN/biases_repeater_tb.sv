@@ -14,7 +14,7 @@ module biases_repeater_tb;
 	
     	localparam period = 100;
 
-	DMA dma(.clk(clk), .enable(dmaEnable), .RW(rw), .address(address), .inputDATA(writeBias), .outputData(dmaOut));
+	CNNmemory dma(.clk(clk), .write_enable(rw), .address(address), .data_in(writeBias), .data_out(dmaOut));
 	
 	biases_repeater br(.clk(clk), .enable(enable), .reset(reset), .biasAddress(biasAddress), .numberOfBiases(numberOfBiases), 
 		.outImgAddress(outImgAddress), .outImgSize(outImgSize), 

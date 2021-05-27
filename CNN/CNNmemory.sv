@@ -10,7 +10,7 @@ module CNNmemory(
     reg [15:0] CNNmemory [0:2499];  //2^16  //memory size 655 (150)+ 9655 (2400) + 192055 (48000) + 32*32 (1024) io outputs + 3 + 6 + 96 + 1920 + 4704 + 1167 + 1600 + 400  --->  FC inputs in FC ram ==   61470
 
     initial begin
-        $readmemb("E:/VLSIproject/DCNN_Accelerator/CNN/1.mem", CNNmemory);
+        $readmemb("1.mem", CNNmemory);
     end
 
     always @(posedge clk) begin

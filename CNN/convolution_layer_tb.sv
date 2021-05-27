@@ -21,9 +21,8 @@ module convolution_layer_tb;
     	localparam period = 100;
 
     	//convolution_layer conv(clk, enable, reset, )
-	DMA dma(.clk(clk), .enable(dmaEnable), .RW(rw), .address(address), .inputDATA(inputData), .outputData(dmaOut));
-        load_block loadB (.clk(clk), .enable(loadEnable), .size(blockSize), .address(loadAddr), .dmaAddr(loadBlockAddress), .dmaOut(dmaOut), .out(loadOut) ,.done(loadDone));
-
+	CNNmemory dma(.clk(clk), .write_enable(rw), .address(address), .data_in(inputData), .data_out(dmaOut));
+        load_block loadB (.clk(clk), .enable(loadEnable), .reset(reset), .size(blockSize), .address(loadAddr), .dmaAddr(loadBlockAddress), .dmaOut(dmaOut), .out(loadOut) ,.done(loadDone));
 
 	convolution_layer cl(.clk(clk), .enable(conv_enable), .reset(reset), .loadDone(loadDone),
 		.imgsNumber(imgsNumber), .imgSize(imgSize), .imgsAddress(imgsAddress), 
@@ -36,7 +35,7 @@ module convolution_layer_tb;
 
 	assign address = (writeEnable || loadPrevDataEnable) ? writeAddr : loadBlockAddress;
 	assign dmaEnable = writeEnable || loadEnable || loadPrevDataEnable; 
-	assign rw = loadEnable || loadPrevDataEnable;
+	assign rw = writeEnable;
 	
 	initial begin
 		$display($time, "<< Starting the Simulation >>");
