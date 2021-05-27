@@ -22,12 +22,14 @@ module fc_layer #(parameter numNodesIn = 5,
     
     reg [15: 0] mulInput1, mulInput2;
     wire[15: 0] mulOutput;
+    reg mulFinished, mulEnable, mulReset;
     reg [15: 0] addInput1, addInput2;
     wire[15: 0] addOutput;
     
-    multiplication mul(.A(mulInput1), .B(mulInput2), .Z(mulOutput));
-    
-    add adder(.in1(addInput1),.in2(addInput2),.out(addOutput));
+    reg startedMultiplier;
+    Multiplier #(parameter N = 16) mul(.M(mulInput1), .R(mulInput2), .mulResult(mulOutput), .clk(clk), .finish(mulFinished), .enable(mulEnable), .reset(mulReset));
+
+    add adder(.in1(addInput1), .in2(addInput2), .out(addOutput));
     
     reg [1: 0] state;
     // Output signal when the layer finishes
@@ -50,6 +52,7 @@ module fc_layer #(parameter numNodesIn = 5,
                 weightsI <= 0;
                 inputsI  <= 0;
                 outputsI <= 0;
+                startedMultiplier <= 0;
                 stage = 2;
                 state = 0;
             end
@@ -63,9 +66,18 @@ module fc_layer #(parameter numNodesIn = 5,
         
             else if (stage == 3) begin
                 if (state == 0) begin
-                    mulInput1 = inputNodes[inputsI];
-                    mulInput2 = weights[weightsI];
-                    state = 1 ;
+                    if (startedMultiplier == 0) begin
+                        mulEnable = 1;
+                        mulReset = 1;
+                        mulInput1 = inputNodes[inputsI];
+                        mulInput2 = weights[weightsI];
+                        startedMultiplier = 1;
+                    end
+                    if (mulFinished == 1) begin
+                        state = 1 ;
+                        mulEnable = 0;
+                        startedMultiplier = 0;
+                    end
                 end
                 else if (state == 1) begin
                     addInput1 = mulOutput;
