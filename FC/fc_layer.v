@@ -20,6 +20,16 @@ module fc_layer #(parameter numNodesIn = 5,
     input [15: 0] weights[0: numNodesIn * numNodesOut - 1];
     input [15: 0] biases[0: numNodesOut - 1];
     
+    reg [15: 0] mulInput1, mulInput2;
+    wire[15: 0] mulOutput;
+    reg [15: 0] addInput1, addInput2;
+    wire[15: 0] addOutput;
+    
+    multiplication mul(.A(mulInput1), .B(mulInput2), .Z(mulOutput));
+    
+    add adder(.in1(addInput1),.in2(addInput2),.out(addOutput));
+    
+    reg [1: 0] state;
     // Output signal when the layer finishes
     output reg finished;
     
@@ -41,43 +51,65 @@ module fc_layer #(parameter numNodesIn = 5,
                 inputsI  <= 0;
                 outputsI <= 0;
                 stage = 2;
+                state = 0;
             end
             
             else if (stage == 2) begin
-            outputNodes[outputsI] <= 0;
-            inputsI               <= 0;
-            curWeightsI           <= 0;
-            stage = 3;
-        end
+                outputNodes[outputsI] <= 0;
+                inputsI               <= 0;
+                curWeightsI           <= 0;
+                stage = 3;
+            end
         
-        else if (stage == 3) begin
-        outputNodes[outputsI] = outputNodes[outputsI] + inputNodes[inputsI] * weights[weightsI];
-        curWeightsI           = curWeightsI + 1;
-        if (curWeightsI < numNodesIn) begin
-            weightsI = weightsI + 1;
-            inputsI  = inputsI + 1;
+            else if (stage == 3) begin
+                if (state == 0) begin
+                    mulInput1 = inputNodes[inputsI];
+                    mulInput2 = weights[weightsI];
+                    state = 1 ;
+                end
+                else if (state == 1) begin
+                    addInput1 = mulOutput;
+                    addInput2 = outputNodes[outputsI];
+                    state = 2;
+                end
+                else begin
+                    outputNodes[outputsI] = addOutput;
+                    curWeightsI           = curWeightsI + 1;
+                    if (curWeightsI < numNodesIn) begin
+                        weightsI = weightsI + 1;
+                        inputsI  = inputsI + 1;
+                    end
+                    else begin
+                        curWeightsI = curWeightsI - 1;
+                        weightsI    = weightsI + 1;
+                        stage       = 4;
+                    end
+                    state = 0;
+                end
+            end
+    
+            else if (stage == 4) begin
+                if (state == 0) begin
+                    addInput1 = biases[outputsI];
+                    addInput2 = outputNodes[outputsI];
+                    state = 1;
+                end
+                else begin
+                    outputNodes[outputsI] = addOutput;
+                    outputsI = outputsI + 1;
+                    if (outputsI < numNodesOut) begin
+                        stage = 2;
+                    end
+                    else
+                        stage = 5;
+                    state = 0;
+                end
+            end
+    
+            else 
+                finished = 1;
+
+
         end
-        else begin
-            curWeightsI = curWeightsI - 1;
-            weightsI    = weightsI + 1;
-            stage       = 4;
-        end
-    end
-    
-    else if (stage == 4) begin
-    outputNodes[outputsI] = outputNodes[outputsI] + biases[outputsI];
-    outputsI              = outputsI + 1;
-    if (outputsI < numNodesOut) begin
-        stage = 2;
-    end
-    else
-        stage = 5;
-    end
-    
-    else begin
-    finished = 1;
-    end
-    
-    end
     end
 endmodule
