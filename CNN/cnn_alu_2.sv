@@ -1,6 +1,6 @@
 
 module cnn_controller (clk, enable, reset, orgLayerAddress, orgImgAddress,
- memFetchResult ,orgImgSize, imgSize ,fetchedImage, loadBlockAddress, dmaInput,
+ memFetchResult ,orgImgSize, imgSize ,fetchedImage, loadBlockAddress, 
  dmaEnable, dmaDone, dmaAddress, done ,loadImageEnable,loadImageDone , loadImgAddress, loadEnable, writeEnable);
 
 input clk,enable, reset,dmaDone,loadImageDone,orgLayerAddress,
@@ -21,7 +21,7 @@ reg [DATA_SIZE-1:0] loadImgAddress;
 reg [DATA_SIZE-1:0] orgImgAddress;  
 reg [DATA_SIZE-1:0] loadBlockAddress;  
 reg signed [DATA_SIZE-1:0] memFetchResult [0:BLOCK_SIZE-1]; 
-reg signed [DATA_SIZE-1:0] dmaInput; 
+reg signed [DATA_SIZE-1:0] dmaInput [0:BLOCK_SIZE-1]; 
 reg signed [DATA_SIZE-1:0] fetchedImage [0:n*n-1]; 
 
 // input buffers  
@@ -55,7 +55,7 @@ reg poolLoadEnable, poolWriteEnable;
 
 
 pool_layer poolModule (.clk(clk), .enable(poolEnable), .reset(reset), .loadDone(loadImageDone),
-		.imgsNumber(imgsCountBuffer), .imgSize(imgSizeBuffer), .imgsAddress(imgAddressBuffer), .windowSize(16'd2), 
+		.imgsNumber(imgsCountBuffer), .imgSize(imgSizeBuffer), .imgsAddress(imgAddressBuffer), .windowSize(2), 
 		.loadAddr(loadImgAddress), .loadSize(imgSize), .loadOut(fetchedImage), .loadEnable(poolLoadEnable),
  		.writeAddr(poolWriteAddress), .writeOut(dmaInput), .writeEnable(poolWriteEnable),
 		.done(poolDone));
@@ -64,8 +64,7 @@ always @(layerAddressBuffer, poolWriteAddress, poolLoadEnable, poolWriteEnable) 
 
       if(poolEnable)begin
             dmaAddress = (poolWriteEnable) ? poolWriteAddress : loadBlockAddress; 
-            dmaEnable = poolWriteEnable; 
-            loadImageEnable = poolLoadEnable;
+            dmaEnable = poolLoadEnable || poolWriteEnable; 
         end else 
             dmaAddress = layerAddressBuffer;
 end
@@ -73,9 +72,8 @@ end
 always @(negedge clk) begin
 	if(enable && dmaDone)begin	
 	    if(readNoOfLayers && doneReadNoOFLayers)begin
-		noOfLayers = memFetchResult[0]; 
+		    noOfLayers = memFetchResult[0]; 
      		readNoOfLayers = 0;
-		loadEnable = 0; 
 	    end
 	    if(readLayerData && doneReadLayerData)begin
 		    layerType = memFetchResult[0]; 
@@ -126,20 +124,16 @@ always @(posedge clk) begin
             
             if(readNoOfLayers)begin  
                 doneReadNoOFLayers = 1; 
-		loadEnable = 0; 
-		dmaEnable = 1;
             end
             if(readLayerData)begin  
                 doneReadLayerData = 1; 
                 convOrpoolRun = 1;
-		loadEnable = 0; 
-		dmaEnable = 1;
             end
             if(doneReadNoOFLayers==0)begin // read # of layers 
                 dmaEnable = 1;
 	            readNoOfLayers = 1;
-		    loadEnable =1;
-		    loadImageEnable =0;
+		        loadEnable =1;
+		        loadImageEnable =0;
                 //initial buffers
 	            layerAddressBuffer = orgLayerAddress; 
                 imgAddressBuffer = orgImgAddress;
