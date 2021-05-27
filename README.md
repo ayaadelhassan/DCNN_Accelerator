@@ -55,6 +55,11 @@ The process is divided into 3 modules:
 
 
 ### IO Module
+<p align="center">
+  <a href="" rel="noopener">
+    <img src="https://i.ibb.co/grVHWbd/Screenshot-20210527-232019.png" alt="IODesign1"></a><br> <br>
+  <img src="https://i.ibb.co/d5wP0KY/Screenshot-20210527-232035.png" alt="IODesign2"></a>
+</p>
 
 ### CNN Module
 
