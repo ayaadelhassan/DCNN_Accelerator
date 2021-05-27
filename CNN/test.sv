@@ -12,7 +12,7 @@ module test ;
 	reg loadEnable, loadDone;
 
 	reg [15:0] loadAddr;
-	reg [15:0] loadBlockAddress;
+	wire [15:0] loadBlockAddress;
 	reg signed [15:0] loadOut [0:1023];
 
 	// CNN ALU variables
@@ -28,7 +28,7 @@ module test ;
 
 	DMA dma(.clk(clk), .enable(dmaEnable), .RW(readWrite), .address(dmaAddress), .inputDATA(dmaInputData), .outputData(dmaOutputData));
 
-	load_block loadB (.clk(clk), .enable(loadEnable), .size(CNNOutImgSize), .address(loadAddr), .dmaAddr(loadBlockAddress), .dmaOut(dmaOutputData), .out(loadOut) ,.done(loadDone));
+	load_block loadB (.clk(clk), .enable(loadEnable),.reset(reset), .size(CNNOutImgSize), .address(loadAddr), .dmaAddr(loadBlockAddress), .dmaOut(dmaOutputData), .out(loadOut) ,.done(loadDone));
 	
 	cnn_controller cnn2(.clk(clk), .enable(CNNEnable), .reset(CNNreset), .orgLayerAddress(CNNinitialAddress), .orgImgAddress(CNNimgAddr), // initial input address
 	.memFetchResult(dmaOutputData) ,.orgImgSize(CNNImgSize), .imgSize(CNNOutImgSize) ,.fetchedImage(loadOut), 
@@ -37,7 +37,7 @@ module test ;
 	
 	assign dmaEnable = loadEnable || CNNDmaEnable;
 	assign readWrite = CnnLoadEnable || loadEnable;
-    assign dmaAddress = loadEnable? loadAddr:CNNDmaAddress;
+   	assign dmaAddress = loadEnable? loadBlockAddress :CNNDmaAddress;
 
 	always @(posedge clk)begin 
 		if(reset)begin 

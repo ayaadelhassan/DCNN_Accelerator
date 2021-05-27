@@ -100,7 +100,7 @@ module convolution_layer(clk, enable, reset, loadDone,
 			biasesEnable = 0;	
 		end
 
-		if(isBiasesDone == 0) begin
+		if(isBiasesDone == 0 && enable) begin
 			biasesEnable = 1;
 		end
 		
@@ -114,6 +114,8 @@ module convolution_layer(clk, enable, reset, loadDone,
 			isFilterLoaded = 0;
 			isBiasesDone = 0;
 			convEnable = 0;
+			loadEnable = 0;
+			biasesEnable = 0;
 			convWriteEnable = 0;
 			convLoadPrevDataEnable = 0;
 		end
@@ -170,12 +172,14 @@ module convolution_layer(clk, enable, reset, loadDone,
 			imgCounter = 0;
 			filterCounter = 0;
 			loadingOp = 0;
+			loadEnable = 0;
 			loadType = 0;
 			isImageLoaded = 0;
 			isFilterLoaded = 0;
 			convEnable = 0;
 			convWriteEnable = 0;
 			isBiasesDone = 0;
+			biasesEnable = 0;
 			convLoadPrevDataEnable = 0;
 		end
 		else if (enable && isBiasesDone && loadingOp == 0 && done == 0) begin
