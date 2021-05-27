@@ -11,18 +11,19 @@ localparam n = 32;
 localparam BLOCK_SIZE = 25;
 localparam DATA_SIZE = 16;
 
-reg clk, enable, reset,dmaDone,loadImageDone,dmaEnable,loadEnable,writeEnable, done; 
+wire clk, enable, reset,dmaDone,loadImageDone,writeEnable; 
+reg dmaEnable , loadEnable ,done; 
 wire loadImageEnable; 
-reg [DATA_SIZE-1:0] orgLayerAddress; 
-reg [DATA_SIZE-1:0] orgImgSize; 
-reg [DATA_SIZE-1:0] imgSize; 
+wire [DATA_SIZE-1:0] orgLayerAddress; 
+wire [DATA_SIZE-1:0] orgImgSize; 
+wire [DATA_SIZE-1:0] imgSize; 
 wire [DATA_SIZE-1:0] dmaAddress;  
 wire [DATA_SIZE-1:0] loadImgAddress;  
-reg [DATA_SIZE-1:0] orgImgAddress;  
+wire [DATA_SIZE-1:0] orgImgAddress;  
 wire [DATA_SIZE-1:0] loadBlockAddress;  
-reg signed [DATA_SIZE-1:0] memFetchResult [0:BLOCK_SIZE-1]; 
+wire signed [DATA_SIZE-1:0] memFetchResult [0:BLOCK_SIZE-1]; 
 wire signed [DATA_SIZE-1:0] dmaInput; 
-reg signed [DATA_SIZE-1:0] fetchedImage [0:n*n-1]; 
+wire signed [DATA_SIZE-1:0] fetchedImage [0:n*n-1]; 
 
 // input buffers  
 reg [DATA_SIZE-1:0] layerAddressBuffer; 
@@ -89,11 +90,13 @@ layerAddressBuffer : ( poolEnable? ((poolWriteEnable) ? poolWriteAddress : loadB
 ((convWriteEnable || convLoadPrevDataEnable) ? convWriteAddress : loadBlockAddress) );
 assign loadImgAddress = ( poolEnable ) ? poolLoadImgAddress : convLoadImgAddress;
 assign loadImageEnable = (poolEnable == 0 && convEnable == 0)? 0 : (poolEnable?poolLoadEnable: convLoadEnable);
-always @(layerAddressBuffer,convLoadPrevDataEnable,convWriteAddress, poolWriteAddress, poolLoadEnable, poolWriteEnable,convLoadEnable,convWriteEnable) begin
+assign imgSize = poolEnable ? poolLoadSize: convLoadSize;
+assign writeEnable = poolWriteEnable || convWriteEnable; 
+always @( poolEnable, convEnable, poolWriteEnable,convWriteEnable) begin
 
       if(poolEnable)begin
             //loadImgAddress = poolLoadImgAddress; 
-            imgSize = poolLoadSize; 
+            // imgSize = poolLoadSize; 
             //dmaAddress = (poolWriteEnable) ? poolWriteAddress : loadBlockAddress; 
             dmaEnable = poolWriteEnable; 
             //dmaInput = poolWriteOut; 
@@ -103,28 +106,28 @@ always @(layerAddressBuffer,convLoadPrevDataEnable,convWriteAddress, poolWriteAd
             //loadImgAddress = convLoadImgAddress;
             dmaEnable = convWriteEnable; 
             //loadImageEnable = convLoadEnable;
-            imgSize = convLoadSize; 
+            // imgSize = convLoadSize; 
         end
         //  else
         //     dmaAddress = layerAddressBuffer;
 end
 
-always @(negedge clk) begin
-	if(enable && dmaDone)begin	
-	    if(readNoOfLayers && doneReadNoOFLayers)begin
-		    noOfLayers = memFetchResult[0]; 
-     		readNoOfLayers = 0;
+// always @(negedge clk) begin
+// 	if(enable && dmaDone)begin	
+// 	    if(readNoOfLayers && doneReadNoOFLayers)begin
+// 		    noOfLayers = memFetchResult[0]; 
+//      		readNoOfLayers = 0;
 		   
-	    end
-	    if(readLayerData && doneReadLayerData)begin
-		    layerType = memFetchResult[0]; 
-		    filterSize = memFetchResult[1]; 
-		    noOfFilters = memFetchResult[2]; 
-     		readLayerData = 0;
+// 	    end
+// 	    if(readLayerData && doneReadLayerData)begin
+// 		    layerType = memFetchResult[0]; 
+// 		    filterSize = memFetchResult[1]; 
+// 		    noOfFilters = memFetchResult[2]; 
+//      		readLayerData = 0;
            
-	    end
-	end
-end
+// 	    end
+// 	end
+// end
 
 always @(posedge clk) begin
     if(reset)begin
@@ -135,23 +138,25 @@ always @(posedge clk) begin
         readLayerData = 0;
         layerType = 0; 
         filterSize= 0;
+        done = 0; 
         noOfFilters= 0;
         layerCounter = 0; 
         poolEnable = 0; 
         convEnable = 0; 
         imgsCountBuffer = 1;
     end
-    if(enable)begin  
+    if(enable && !done )begin  
         if(dmaDone  || convDone || poolDone )begin
             convOrpoolRun = 0;
             if((convEnable && convDone) || ( poolEnable && poolDone) )begin
                 if(convEnable)begin
                     // increase address by # of filters * size of filter 
-                    layerAddressBuffer = layerAddressBuffer+ (filterSize * filterSize * noOfFilters) - 1;
                     // clac new image size after last conv
                     imgSizeBuffer = imgSizeBuffer - ((filterSize/2) * 2); 
                     //calc # of feature maps from prev layer conv layer
                     imgsCountBuffer = noOfFilters / imgsCountBuffer; 
+
+                    layerAddressBuffer = layerAddressBuffer+ (filterSize * filterSize * noOfFilters) - 1 + imgsCountBuffer;
                     convEnable = 0;  
                 end else begin
                     // image size after last bool
@@ -168,6 +173,8 @@ always @(posedge clk) begin
             
             if(readNoOfLayers)begin  
                 doneReadNoOFLayers = 1; 
+                 noOfLayers = memFetchResult[0]; 
+     		    readNoOfLayers = 0;
 		         loadEnable = 0; 
 		         dmaEnable = 0;
             end
@@ -176,6 +183,10 @@ always @(posedge clk) begin
                 convOrpoolRun = 1;
 		        loadEnable = 0; 
 		        dmaEnable = 0;
+                layerType = memFetchResult[0]; 
+		        filterSize = memFetchResult[1]; 
+		        noOfFilters = memFetchResult[2]; 
+     		    readLayerData = 0;
             end
             if(doneReadNoOFLayers==0)begin // read # of layers 
                 dmaEnable = 1;
@@ -202,7 +213,8 @@ always @(posedge clk) begin
                     poolEnable = !layerType[0]; 
 
                 end 
-            end
+            end else if(layerCounter == noOfLayers)
+                done = 1; 
         end
     end
 end

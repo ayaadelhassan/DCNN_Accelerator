@@ -1,4 +1,4 @@
-module test ;
+module cnn_controller_tb;
 	localparam period = 100;
 	reg clk, reset;
 	// DMA variables
@@ -9,27 +9,24 @@ module test ;
 
 
 	// load block variables
-	reg loadEnable, loadDone;
-
+	wire loadEnable, loadDone ;
+	reg CNNEnable,CNNreset; 
 	reg [15:0] loadAddr;
 	wire [15:0] loadBlockAddress;
 	reg signed [15:0] loadOut [0:1023];
 
 	// CNN ALU variables
-	reg CNNEnable, CNNreset , CNNDmaEnable, CnnDmaDone, CnnLoadEnable, CnnWriteEnable, CNNDone;
-	reg [15:0] CNNinitialAddress;
-	reg [15:0] CNNDmaAddress;
-	reg [15:0] CNNImgSize;
-	reg [15:0] CNNOutImgSize;
-	reg [15:0] CNNimgAddr;
+	wire CNNDmaEnable, CnnDmaDone, CnnLoadEnable, CnnWriteEnable, CNNDone;
+	wire [15:0] CNNinitialAddress;
+	wire [15:0] CNNDmaAddress;
+	wire [15:0] CNNImgSize;
+	wire [15:0] CNNOutImgSize;
+	wire [15:0] CNNimgAddr;
 	
-	reg write_enable;
 
-	assign write_enable = !readWrite;
 
-	CNNmemory dma(.data_out(dmaOutputData), .address(dmaAddress), .data_in(dmaInputData), .write_enable(write_enable), .clk(clk));
 
-	//DMA dma(.clk(clk), .enable(dmaEnable), .RW(readWrite), .address(dmaAddress), .inputDATA(dmaInputData), .outputData(dmaOutputData));
+	CNNmemory dma(.data_out(dmaOutputData), .address(dmaAddress), .data_in(dmaInputData), .write_enable(readWrite), .clk(clk));
 
 	load_block loadB (.clk(clk), .enable(loadEnable),.reset(reset), .size(CNNOutImgSize), .address(loadAddr), .dmaAddr(loadBlockAddress), .dmaOut(dmaOutputData), .out(loadOut) ,.done(loadDone));
 	
@@ -39,29 +36,23 @@ module test ;
 	.done(CNNDone) ,.loadImageEnable(loadEnable),.loadImageDone(loadDone) , .loadImgAddress(loadAddr), .loadEnable(CnnLoadEnable), .writeEnable(CnnWriteEnable));
 	
 	assign dmaEnable = loadEnable || CNNDmaEnable;
-	assign readWrite = CnnLoadEnable || loadEnable;
-   	assign dmaAddress = loadEnable? loadBlockAddress :CNNDmaAddress;
-
-	always @(posedge clk)begin 
-		if(reset)begin 
-			CNNinitialAddress = 0; 
-            		CNNimgAddr = 100; 
-			CNNImgSize =6;
-                end 
+	assign readWrite = CnnWriteEnable;
+   	assign dmaAddress = loadEnable? loadBlockAddress : CNNDmaAddress;
+	assign CNNinitialAddress = 0; 
+	assign CNNimgAddr = 100;
+	assign CNNImgSize =6; 
+	assign CnnDmaDone = 1;
 	
-	end
-
 	initial begin
 		$display($time, " << Starting the Simulation >>");
 		clk = 1;
 		reset = 1;
 		CNNreset = 1; 
 		CNNEnable = 0;
-		
 		#period
 		reset = 0;
 		CNNEnable = 1;
-        CnnDmaDone = 1; 
+         
 		CNNreset = 0; 
 
 	end
