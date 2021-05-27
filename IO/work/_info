@@ -10,136 +10,160 @@ cModel Technology
 dD:/college/cmp3/second/vlsi/req
 vChip
 Z0 DXx6 sv_std 3 std 0 22 AD7iAPLo6nTIKk<N0eo=D3
-!s110 1622036592
+Z1 !s110 1622077899
 !i10b 1
-!s100 n<NX2F1=KkjNPf@A16YYQ1
-IcDRe6V:4lXG1;;JJ>AkmN3
-Z1 VDg1SIo80bB@j0V0VzS_@n1
+!s100 5mjGE1>VbTG2bk_Nd3VUc1
+Ic_Kn27UQi]AB6KfT0Y5EB1
+Z2 VDg1SIo80bB@j0V0VzS_@n1
 !s105 Chip_sv_unit
 S1
-Z2 dD:/college/cmp3/second/vlsi/DCNN_Accelerator/IO
-Z3 w1622035161
-8D:/college/cmp3/second/vlsi/DCNN_Accelerator/IO/Chip.sv
-FD:/college/cmp3/second/vlsi/DCNN_Accelerator/IO/Chip.sv
+Z3 dE:/3rd year/2nd term/VLSI/project/DCNN_Accelerator/IO
+w1622077848
+8E:/3rd year/2nd term/VLSI/project/DCNN_Accelerator/IO/Chip.sv
+FE:/3rd year/2nd term/VLSI/project/DCNN_Accelerator/IO/Chip.sv
 L0 1
 Z4 OV;L;10.5b;63
 r1
 !s85 0
 31
-!s108 1622036592.000000
-!s107 D:/college/cmp3/second/vlsi/DCNN_Accelerator/IO/Chip.sv|
-!s90 -reportprogress|300|-work|work|-sv|-stats=none|D:/college/cmp3/second/vlsi/DCNN_Accelerator/IO/Chip.sv|
+Z5 !s108 1622077899.000000
+!s107 E:/3rd year/2nd term/VLSI/project/DCNN_Accelerator/IO/Chip.sv|
+!s90 -reportprogress|300|-work|work|-sv|-stats=none|E:/3rd year/2nd term/VLSI/project/DCNN_Accelerator/IO/Chip.sv|
 !i113 1
-Z5 o-work work -sv
-Z6 tCvgOpt 0
+Z6 o-work work -sv
+Z7 tCvgOpt 0
 n@chip
 vCNNmemory
-Z7 !s110 1622036591
+R1
 !i10b 1
 !s100 Zgj>P1e2R9@Z:oKQ;=i]a2
-I>AZiS[YN_K?gD]>P]_@;Q0
-R1
+IJo]5[7C?a5`RPml@Y?3zz0
 R2
-w1621799230
-8D:/college/cmp3/second/vlsi/DCNN_Accelerator/IO/cnn_ram.v
-FD:/college/cmp3/second/vlsi/DCNN_Accelerator/IO/cnn_ram.v
+R3
+Z8 w1622048650
+8E:/3rd year/2nd term/VLSI/project/DCNN_Accelerator/IO/cnn_ram.v
+FE:/3rd year/2nd term/VLSI/project/DCNN_Accelerator/IO/cnn_ram.v
 L0 2
 R4
 r1
 !s85 0
 31
-Z8 !s108 1622036591.000000
-!s107 D:/college/cmp3/second/vlsi/DCNN_Accelerator/IO/cnn_ram.v|
-!s90 -reportprogress|300|-work|work|-stats=none|D:/college/cmp3/second/vlsi/DCNN_Accelerator/IO/cnn_ram.v|
+R5
+!s107 E:/3rd year/2nd term/VLSI/project/DCNN_Accelerator/IO/cnn_ram.v|
+!s90 -reportprogress|300|-work|work|-stats=none|E:/3rd year/2nd term/VLSI/project/DCNN_Accelerator/IO/cnn_ram.v|
 !i113 1
 Z9 o-work work
-R6
+R7
 n@c@n@nmemory
 vdecompression
-R7
-!i10b 1
-!s100 6I_;>2;FJb0RFgJdNDJ<42
-IOY7E42E@fUA=b0^DH951?0
 R1
+!i10b 1
+!s100 ]g@aKHEMZdzThicBgINjl0
+IU7J`EiP93;LBXHa4RmHmn2
 R2
 R3
-8D:/college/cmp3/second/vlsi/DCNN_Accelerator/IO/decompretion.v
-FD:/college/cmp3/second/vlsi/DCNN_Accelerator/IO/decompretion.v
+w1622066211
+8E:/3rd year/2nd term/VLSI/project/DCNN_Accelerator/IO/decompretion.v
+FE:/3rd year/2nd term/VLSI/project/DCNN_Accelerator/IO/decompretion.v
 L0 1
 R4
 r1
 !s85 0
 31
-R8
-!s107 D:/college/cmp3/second/vlsi/DCNN_Accelerator/IO/decompretion.v|
-!s90 -reportprogress|300|-work|work|-stats=none|D:/college/cmp3/second/vlsi/DCNN_Accelerator/IO/decompretion.v|
+R5
+!s107 E:/3rd year/2nd term/VLSI/project/DCNN_Accelerator/IO/decompretion.v|
+!s90 -reportprogress|300|-work|work|-stats=none|E:/3rd year/2nd term/VLSI/project/DCNN_Accelerator/IO/decompretion.v|
 !i113 1
 R9
-R6
-vFCmemory
 R7
-!i10b 1
-!s100 o6z@[e7I^HmjV;:D4L9MK3
-I`K4aW4Een^15<K<`EhL;K2
+vFCmemory
 R1
+!i10b 1
+!s100 31JGN1j5W<]DLFgET=?Fe1
+IKe^dNBKn?Fzb1[[K=5Jh63
 R2
 R3
-8D:/college/cmp3/second/vlsi/DCNN_Accelerator/IO/fc_ram.v
-FD:/college/cmp3/second/vlsi/DCNN_Accelerator/IO/fc_ram.v
+R8
+8E:/3rd year/2nd term/VLSI/project/DCNN_Accelerator/IO/fc_ram.v
+FE:/3rd year/2nd term/VLSI/project/DCNN_Accelerator/IO/fc_ram.v
 L0 2
 R4
 r1
 !s85 0
 31
-R8
-!s107 D:/college/cmp3/second/vlsi/DCNN_Accelerator/IO/fc_ram.v|
-!s90 -reportprogress|300|-work|work|-stats=none|D:/college/cmp3/second/vlsi/DCNN_Accelerator/IO/fc_ram.v|
+R5
+!s107 E:/3rd year/2nd term/VLSI/project/DCNN_Accelerator/IO/fc_ram.v|
+!s90 -reportprogress|300|-work|work|-stats=none|E:/3rd year/2nd term/VLSI/project/DCNN_Accelerator/IO/fc_ram.v|
 !i113 1
 R9
-R6
+R7
 n@f@cmemory
 vio
 R0
-R7
+!s110 1622077900
 !i10b 1
-!s100 ?P>PFMWBFc6CHC<gf^e@I3
-I]i[6:7I7nTcOZTLlT9ZH`3
-R1
+!s100 G>[baN@B50]V;m5R;2i611
+ImdRQAHnb_iC;[fL2bJ:Eh1
+R2
 !s105 io_sv_unit
 S1
-R2
-w1622036588
-8D:/college/cmp3/second/vlsi/DCNN_Accelerator/IO/io.sv
-FD:/college/cmp3/second/vlsi/DCNN_Accelerator/IO/io.sv
+R3
+w1622066817
+8E:/3rd year/2nd term/VLSI/project/DCNN_Accelerator/IO/io.sv
+FE:/3rd year/2nd term/VLSI/project/DCNN_Accelerator/IO/io.sv
 L0 1
 R4
 r1
 !s85 0
 31
-R8
-!s107 D:/college/cmp3/second/vlsi/DCNN_Accelerator/IO/io.sv|
-!s90 -reportprogress|300|-work|work|-sv|-stats=none|D:/college/cmp3/second/vlsi/DCNN_Accelerator/IO/io.sv|
-!i113 1
 R5
+!s107 E:/3rd year/2nd term/VLSI/project/DCNN_Accelerator/IO/io.sv|
+!s90 -reportprogress|300|-work|work|-sv|-stats=none|E:/3rd year/2nd term/VLSI/project/DCNN_Accelerator/IO/io.sv|
+!i113 1
 R6
-vmemory
 R7
+vmemory
+R1
 !i10b 1
 !s100 VaiNPDG`fmh>8CO:@WVAX2
-IFcVTD_d0llCii6AOeZXk_2
-R1
+I8i6fH`6N7WZ^Y1TVnfH>73
 R2
-w1621789410
-8D:/college/cmp3/second/vlsi/DCNN_Accelerator/IO/ram.v
-FD:/college/cmp3/second/vlsi/DCNN_Accelerator/IO/ram.v
+R3
+R8
+8E:/3rd year/2nd term/VLSI/project/DCNN_Accelerator/IO/ram.v
+FE:/3rd year/2nd term/VLSI/project/DCNN_Accelerator/IO/ram.v
 L0 2
 R4
 r1
 !s85 0
 31
-R8
-!s107 D:/college/cmp3/second/vlsi/DCNN_Accelerator/IO/ram.v|
-!s90 -reportprogress|300|-work|work|-stats=none|D:/college/cmp3/second/vlsi/DCNN_Accelerator/IO/ram.v|
+R5
+!s107 E:/3rd year/2nd term/VLSI/project/DCNN_Accelerator/IO/ram.v|
+!s90 -reportprogress|300|-work|work|-stats=none|E:/3rd year/2nd term/VLSI/project/DCNN_Accelerator/IO/ram.v|
 !i113 1
 R9
-R6
+R7
+vtestbench
+R0
+!s110 1622078054
+!i10b 1
+!s100 O:h=oKK`<bEVOLmAWY2=i0
+ICRWUZFRbX:N;jd9Ro:`ie1
+R2
+!s105 testbench_sv_unit
+S1
+R3
+w1622078045
+8E:/3rd year/2nd term/VLSI/project/DCNN_Accelerator/IO/testbench.sv
+FE:/3rd year/2nd term/VLSI/project/DCNN_Accelerator/IO/testbench.sv
+L0 3
+R4
+r1
+!s85 0
+31
+!s108 1622078054.000000
+!s107 E:/3rd year/2nd term/VLSI/project/DCNN_Accelerator/IO/testbench.sv|
+!s90 -reportprogress|300|-work|work|-stats=none|E:/3rd year/2nd term/VLSI/project/DCNN_Accelerator/IO/testbench.sv|
+!i113 1
+R9
+R7
