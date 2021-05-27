@@ -65,7 +65,7 @@ The process is divided into 3 modules:
 <p align="center">
   <a href="" rel="noopener">
     <img src="https://i.ibb.co/Tc5C297/Design-1.png" alt="CNNDesign1"></a><br> <br>
-    <img src="https://i.ibb.co/wStXt43/Design.png" alt="CNNDesign2"></a><br> <br>
+    <img src="https://i.ibb.co/RzPMvrq/Untitled-Diagram-2.png" alt="CNNDesign2"></a><br> <br>
     <img src="https://i.ibb.co/KDLJDz2/Pooling.png" alt="CNNDesign3"></a>
 </p>
 
