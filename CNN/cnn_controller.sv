@@ -11,14 +11,15 @@ localparam n = 32;
 localparam BLOCK_SIZE = 25;
 localparam DATA_SIZE = 16;
 
-reg clk, enable, reset,dmaDone,loadImageDone,dmaEnable,loadImageEnable,loadEnable,writeEnable, done; 
+reg clk, enable, reset,dmaDone,loadImageDone,dmaEnable,loadEnable,writeEnable, done; 
+wire loadImageEnable; 
 reg [DATA_SIZE-1:0] orgLayerAddress; 
 reg [DATA_SIZE-1:0] orgImgSize; 
 reg [DATA_SIZE-1:0] imgSize; 
-reg [DATA_SIZE-1:0] dmaAddress;  
-reg [DATA_SIZE-1:0] loadImgAddress;  
+wire [DATA_SIZE-1:0] dmaAddress;  
+wire [DATA_SIZE-1:0] loadImgAddress;  
 reg [DATA_SIZE-1:0] orgImgAddress;  
-reg [DATA_SIZE-1:0] loadBlockAddress;  
+wire [DATA_SIZE-1:0] loadBlockAddress;  
 reg signed [DATA_SIZE-1:0] memFetchResult [0:BLOCK_SIZE-1]; 
 wire signed [DATA_SIZE-1:0] dmaInput; 
 reg signed [DATA_SIZE-1:0] fetchedImage [0:n*n-1]; 
@@ -83,23 +84,29 @@ convolution_layer convModule(.clk(clk), .enable(convEnable), .reset(reset), .loa
 	dmaInput = convWriteOut;
 end*/
 assign dmaInput = poolEnable? poolWriteOut : convWriteOut;
+assign dmaAddress = ( poolEnable == 0 && convEnable == 0 )?
+layerAddressBuffer : ( poolEnable? ((poolWriteEnable) ? poolWriteAddress : loadBlockAddress):
+((convWriteEnable || convLoadPrevDataEnable) ? convWriteAddress : loadBlockAddress) );
+assign loadImgAddress = ( poolEnable ) ? poolLoadImgAddress : convLoadImgAddress;
+assign loadImageEnable = (poolEnable == 0 && convEnable == 0)? 0 : (poolEnable?poolLoadEnable: convLoadEnable);
 always @(layerAddressBuffer,convLoadPrevDataEnable,convWriteAddress, poolWriteAddress, poolLoadEnable, poolWriteEnable,convLoadEnable,convWriteEnable) begin
 
       if(poolEnable)begin
-            loadImgAddress = poolLoadImgAddress; 
+            //loadImgAddress = poolLoadImgAddress; 
             imgSize = poolLoadSize; 
-            dmaAddress = (poolWriteEnable) ? poolWriteAddress : loadBlockAddress; 
+            //dmaAddress = (poolWriteEnable) ? poolWriteAddress : loadBlockAddress; 
             dmaEnable = poolWriteEnable; 
             //dmaInput = poolWriteOut; 
-            loadImageEnable = poolLoadEnable;
+            //loadImageEnable = poolLoadEnable;
         end else if(convEnable) begin
-            dmaAddress = (convWriteEnable || convLoadPrevDataEnable) ? convWriteAddress : loadBlockAddress; 
-            loadImgAddress = convLoadImgAddress;
+            //dmaAddress = (convWriteEnable || convLoadPrevDataEnable) ? convWriteAddress : loadBlockAddress; 
+            //loadImgAddress = convLoadImgAddress;
             dmaEnable = convWriteEnable; 
-            loadImageEnable = convLoadEnable;
+            //loadImageEnable = convLoadEnable;
             imgSize = convLoadSize; 
-        end else
-            dmaAddress = layerAddressBuffer;
+        end
+        //  else
+        //     dmaAddress = layerAddressBuffer;
 end
 
 always @(negedge clk) begin
@@ -174,20 +181,20 @@ always @(posedge clk) begin
                 dmaEnable = 1;
 	            readNoOfLayers = 1;
 		        loadEnable =1;
-		        loadImageEnable =0;
+		       // loadImageEnable =0;
                 //initial buffers
 	            layerAddressBuffer = orgLayerAddress; 
                 imgAddressBuffer = orgImgAddress;
                 imgSizeBuffer = orgImgSize; 
-                dmaAddress = layerAddressBuffer;
+                //dmaAddress = layerAddressBuffer;
             end else if(convEnable == 0 && poolEnable == 0 && layerCounter < noOfLayers)begin
                 if(doneReadLayerData == 0)begin // read layer data 
                     dmaEnable = 1;
                     layerAddressBuffer= layerAddressBuffer+ 1; 
                     readLayerData = 1; 
                     loadEnable = 1; 
-                    loadImageEnable = 0; 
-                    dmaAddress = layerAddressBuffer;
+                    //loadImageEnable = 0; 
+                   //dmaAddress = layerAddressBuffer;
                 end else if(convOrpoolRun == 0)  begin
                     convEnable = layerType[0];
                     if(convEnable)
