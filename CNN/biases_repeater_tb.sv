@@ -1,5 +1,5 @@
 module biases_repeater_tb;
-    	reg clk, reset, loadEnable, dmaEnable, rw, loadDone, writeEnable, done, enable;
+    	reg clk, reset, loadEnable, dmaEnable, rw, writeEnable, done, enable;
 	reg [15:0] address;
 	reg signed [15:0] inputData;
 	reg signed [15:0] dmaOut [0:24];
@@ -34,10 +34,10 @@ module biases_repeater_tb;
 		rw = 1;
 		reset = 1;
 		enable = 1;
-		biasAddress = 100;
-		numberOfBiases = 3;
+		biasAddress = 0;
+		numberOfBiases = 50;
 		outImgAddress = 150;
-		outImgSize = 5;
+		outImgSize = 2;
 		
 		#period;
 		reset = 0;
