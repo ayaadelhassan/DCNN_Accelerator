@@ -22,8 +22,8 @@ always @(posedge clk) begin
     if(enable == 1) begin
         if(done == 0) begin
             // Check if the max is arr[i]
-            assign max = (Arr[i] > max)? Arr[i] : max;
-            assign maxIndex = (Arr[i] > max)? i : maxIndex;
+            assign max = ($signed(Arr[i]) > $signed(max))? Arr[i] : max;
+            assign maxIndex = ($signed(Arr[i]) > $signed(max))? i : maxIndex;
             // prepare to next loop
             assign i = i + 1;
             // Set the result
