@@ -21,13 +21,15 @@ module fc_layer #(parameter numNodesIn = 5,
     input [15: 0] biases[0: numNodesOut - 1];
     
     reg [15: 0] mulInput1, mulInput2;
-    wire[15: 0] mulOutput;
-    reg mulFinished, mulEnable, mulReset;
+    reg signed [15: 0] mulOutput;
+    wire mulFinished;
+    reg mulEnable, mulReset;
     reg [15: 0] addInput1, addInput2;
     wire[15: 0] addOutput;
     
     reg startedMultiplier;
-    Multiplier #(parameter N = 16) mul(.M(mulInput1), .R(mulInput2), .mulResult(mulOutput), .clk(clk), .finish(mulFinished), .enable(mulEnable), .reset(mulReset));
+
+    Multiplier #(.N(16)) mul(.M(mulInput1), .R(mulInput2), .fixedMulResult(mulOutput), .clk(clk), .finish(mulFinished), .enable(mulEnable), .reset(mulReset));
 
     add adder(.in1(addInput1), .in2(addInput2), .out(addOutput));
     
@@ -67,12 +69,14 @@ module fc_layer #(parameter numNodesIn = 5,
             else if (stage == 3) begin
                 if (state == 0) begin
                     if (startedMultiplier == 0) begin
-                        mulEnable = 1;
-                        mulReset = 1;
-                        mulInput1 = inputNodes[inputsI];
-                        mulInput2 = weights[weightsI];
+                        mulEnable <= 1;
+                        mulReset <= 1;
+                        mulInput1 <= inputNodes[inputsI];
+                        mulInput2 <= weights[weightsI];
                         startedMultiplier = 1;
                     end
+                    else
+                        mulReset = 0;
                     if (mulFinished == 1) begin
                         state = 1 ;
                         mulEnable = 0;

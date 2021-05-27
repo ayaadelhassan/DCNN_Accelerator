@@ -28,3 +28,16 @@ force -freeze {sim:/fc_layer/biases[1]} 1 0
 force -freeze {sim:/fc_layer/biases[2]} 1 0
 run
 force -freeze sim:/fc_layer/reset 0 0
+add wave \
+sim:/fc_layer/mulInput1 \
+sim:/fc_layer/mulInput2 \
+sim:/fc_layer/mulOutput \
+sim:/fc_layer/mulFinished \
+sim:/fc_layer/mulEnable \
+sim:/fc_layer/mulReset \
+sim:/fc_layer/addInput1 \
+sim:/fc_layer/addInput2 \
+sim:/fc_layer/addOutput \
+sim:/fc_layer/startedMultiplier \
+sim:/fc_layer/state
+add log sim:/fc_layer/mul/*

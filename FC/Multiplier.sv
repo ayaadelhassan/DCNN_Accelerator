@@ -11,7 +11,7 @@ module Multiplier #(parameter N = 16) (M,R,fixedMulResult,clk,finish,enable,rese
     reg [(2*N)-1:0] mulResult;
     output reg signed [15:0] fixedMulResult;
     reg fixedEnable;
-    fixed_point_modification #(.n(32),.m(10)) fp(.enable(fixedEnable),.result(mulResult),.modifiedOut(fixedMulResult));
+    fixed_point_modification #(.n(32),.m(10)) fp(.result(mulResult),.modifiedOut(fixedMulResult));
 always @(posedge clk) begin
     if(enable) begin
         if (reset) begin
