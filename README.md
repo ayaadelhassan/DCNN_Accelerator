@@ -41,7 +41,7 @@ A detailed low-level design of a DCNN accelerator chip that applies a CNN classi
  <img src="https://i.ibb.co/D7wdc8H/Screenshot-20210527-231304.png" alt="About"></a>
 </p>
 
-## Design <a name = "design"></a>
+## :electron: Design <a name = "design"></a>
 The process is divided into 3 modules:
 1. Loading the image & CNN layers (IO Module)
     * Loading the image & CNN info into the accelerator RAM will be done using compressing (SW) and passing the compressed files using a parallel port (16-bit), then your hardware will uncompress the data and save it in its designated locations.
@@ -54,14 +54,14 @@ The process is divided into 3 modules:
     * Finally, the last layer is a fully connected layer that is applied on the last CNN layer to generate the classification label.
 
 
-### IO Module
+### :electric_plug: IO Module
 <p align="center">
   <a href="" rel="noopener">
     <img src="https://i.ibb.co/grVHWbd/Screenshot-20210527-232019.png" alt="IODesign1"></a><br> <br>
   <img src="https://i.ibb.co/d5wP0KY/Screenshot-20210527-232035.png" alt="IODesign2"></a>
 </p>
 
-### CNN Module
+### :computer: CNN Module
 <p align="center">
   <a href="" rel="noopener">
     <img src="https://i.ibb.co/Tc5C297/Design-1.png" alt="CNNDesign1"></a><br> <br>
@@ -69,7 +69,7 @@ The process is divided into 3 modules:
     <img src="https://i.ibb.co/KDLJDz2/Pooling.png" alt="CNNDesign3"></a>
 </p>
 
-### FC Module
+### :outbox_tray: FC Module
 
 ## ⛏️ Built Using <a name = "tech"></a>
 
