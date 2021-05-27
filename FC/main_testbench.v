@@ -9,23 +9,22 @@ module main_testbench ();
                   .result(result),
                   .reset(reset));
 
-initial
-begin
-    // first reset the component  
-    clk = 1;
+initial begin
     enable = 0;
     reset = 1;
-    #100 clk=~clk;
+    #100 
     reset = 0;
     enable = 1;
-    #100 clk=~clk;
-    while (~finished) begin
-        #100 clk=~clk;
-    end
-    if (result == 4'b0000) begin
+end
+always @(posedge clk) begin
+
+if (finished) begin
+      if (result == 4'b0000) begin
         $display("Right answer");
     end else begin
         $error("Wrong answer");
     end
+end
+
 end
 endmodule

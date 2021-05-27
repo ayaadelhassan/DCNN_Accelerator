@@ -44,3 +44,31 @@ run
 run
 run
 run
+force -freeze sim:/Multiplier/reset 1 0
+force -freeze sim:/Multiplier/R 0100010001011010 0
+force -freeze sim:/Multiplier/M 0011001100110011 0
+run
+force -freeze sim:/Multiplier/reset 0 0
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
