@@ -65,6 +65,17 @@ module convolution_layer(clk, enable, reset, loadDone,
 
 	always @(posedge clk)   // Loops on the images and filter then do the convolution
 	begin
+		if(done) begin
+			done = 0;
+			imgCounter = 0;
+			filterCounter = 0;
+			loadingOp = 0;
+			loadType = 0;
+			isImageLoaded = 0;
+			isFilterLoaded = 0;
+			convEnable = 0;
+			writeEnable = 0;
+		end
 		
 		if(convDone) begin
 			isFilterLoaded = 0;
