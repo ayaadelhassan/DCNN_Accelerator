@@ -11,6 +11,7 @@ sim:/Multiplier/reset \
 sim:/Multiplier/P \
 sim:/Multiplier/fixedMulResult \
 sim:/Multiplier/fixedEnable \
+sim:/Multiplier/result \
 sim:/Multiplier/mulResult
 force -freeze sim:/Multiplier/enable 1 0
 force -freeze sim:/Multiplier/reset 1 0
