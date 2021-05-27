@@ -42,7 +42,7 @@ module pool_layer(clk, enable, reset, loadDone,
 	pool_image_clked pi(.clk(clk), .reset(reset), .enable(poolEnable), 
 				.imgSize(imgSize), .image(image), .windowSize(windowSize),
 		 		.pooledOut(writeOut), .done(poolDone));
-	always @(posedge clk)   // Loops on the images and filter then do the convolution
+	always @(posedge clk)  
 	begin 
 		if(done)begin
 			writeEnable = 0;
