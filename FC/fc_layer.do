@@ -41,3 +41,5 @@ sim:/fc_layer/addOutput \
 sim:/fc_layer/startedMultiplier \
 sim:/fc_layer/state
 add log sim:/fc_layer/mul/*
+
+run 100 ns

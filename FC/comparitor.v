@@ -14,22 +14,22 @@ module Comparitor(
 
 always @(posedge clk) begin
     if(reset == 1) begin
-            assign max  = Arr[0];
-            assign i  = 4'b0001;
-            assign maxIndex = 4'b0000;
-            assign done = 0;
+            max  <= Arr[0];
+            i  <= 4'b0001;
+            maxIndex <= 4'b0000;
+            done <= 0;
         end
     if(enable == 1) begin
         if(done == 0) begin
             // Check if the max is arr[i]
-            assign max = (Arr[i] > max)? Arr[i] : max;
-            assign maxIndex = (Arr[i] > max)? i : maxIndex;
+            max = (Arr[i] > max)? Arr[i] : max;
+            maxIndex = (Arr[i] > max)? i : maxIndex;
             // prepare to next loop
-            assign i = i + 1;
+            i = i + 1;
             // Set the result
             if (i>=9) begin
-                assign result = maxIndex;
-                assign done = 1;
+                result <= maxIndex;
+                done <= 1;
             end
         end 
     end
