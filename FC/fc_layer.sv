@@ -75,13 +75,14 @@ module fc_layer #(parameter numNodesIn = 5,
                         mulInput2 <= weights[weightsI];
                         startedMultiplier = 1;
                     end
-                    else
-                        mulReset = 0;
-                    if (mulFinished == 1) begin
+                    else if (mulFinished == 1) begin
                         state = 1 ;
                         mulEnable = 0;
                         startedMultiplier = 0;
                     end
+                    else
+                        mulReset = 0;
+
                 end
                 else if (state == 1) begin
                     addInput1 = mulOutput;

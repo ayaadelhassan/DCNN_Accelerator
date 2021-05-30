@@ -21,9 +21,8 @@ module biases_repeater(clk, enable, reset, biasAddress, numberOfBiases,
 	integer biasCounter, currentBiasIndex, i;
 	reg isBiasesLoaded;
 	reg [ADDR_SZ-1:0] currentBiasesAddr;
-	
-	
-	assign writeBias = loadedBiases[currentBiasIndex];
+	reg signed [DATA_SZ-1:0] biases[0:24];
+
 	always @(posedge clk) begin
 		if(reset || done) begin
 			biasCounter = 0;
@@ -31,10 +30,9 @@ module biases_repeater(clk, enable, reset, biasAddress, numberOfBiases,
 			isBiasesLoaded = 0;
 			writeEnable = 0;
 			i = 0;
+			loadEnable = 0;
 			done = 0;
-		end
-
-		if(enable) begin
+		end else if(enable) begin
 			if(biasCounter == 0 && writeEnable == 0) begin
 				currentBiasesAddr = biasAddress;
 				writeAddr = outImgAddress-1;
@@ -42,6 +40,7 @@ module biases_repeater(clk, enable, reset, biasAddress, numberOfBiases,
 			if(loadEnable) begin
 				isBiasesLoaded = 1;
 				loadEnable = 0;
+				biases = loadedBiases;
 			end
 			if(writeEnable) begin
 				i = i + 1;
@@ -72,6 +71,7 @@ module biases_repeater(clk, enable, reset, biasAddress, numberOfBiases,
 						currentBiasesAddr = currentBiasesAddr + 16'd25;
 					end
 				end
+				writeBias = biases[currentBiasIndex];
 			end
 		end
 	end

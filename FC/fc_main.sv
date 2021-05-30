@@ -1,5 +1,5 @@
-module fc_main #(parameter firstLayerNodes = 5,
-                  parameter secondLayerNodes = 3, 
+module fc_main #(parameter firstLayerNodes = 3,
+                  parameter secondLayerNodes = 2, 
                   parameter thirdLayerNodes = 10)
                  (enable,
                   clk,

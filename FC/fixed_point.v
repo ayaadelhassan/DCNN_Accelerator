@@ -1,8 +1,7 @@
-
-module fixed_point_modification (enable,result, modifiedOut);
+module fixed_point_modification (result, modifiedOut);
 	parameter n = 32, // 32 for multiplication, 17 for addition
 		m = 10;   // '10' for multiplication, '6' for addition
-    input enable;
+
 	input signed [n-1:0] result;
 	output modifiedOut;
 	reg signed [m-1:0] integerPart;
@@ -10,7 +9,6 @@ module fixed_point_modification (enable,result, modifiedOut);
 	
 	always @ (*)
 	begin
-    if(enable)begin
 		integerPart = result[n-1:n-m];   // [31:22] for multiplication, [16:11] for addition 
 		if (integerPart > 15) begin
 			$display("GREATER");
@@ -25,7 +23,6 @@ module fixed_point_modification (enable,result, modifiedOut);
 			modifiedOut[15:11] = integerPart[4:0];
 			modifiedOut[10:0] = result[n-m-1:n-m-11]; //[21:11] for multiplication, [10:0] for addition
 		end
-    end
 	end
 	
 endmodule
