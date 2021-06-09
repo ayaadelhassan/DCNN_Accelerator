@@ -1,5 +1,5 @@
 vsim -gui work.main_testbench
-mem load -i {/home/mohamedsamy/CMP_3rd/2nd/VLSI/project/code/DCNN_Accelerator (copy)/FC/test.mem} -format mti /main_testbench/fc/mem
+mem load -i {D:\Projects\On GitHub acc\DCNN_Accelerator\FC\test.mem} -format mti /main_testbench/fc/mem
 add wave -position insertpoint  \
 sim:/main_testbench/enable \
 sim:/main_testbench/clk \
