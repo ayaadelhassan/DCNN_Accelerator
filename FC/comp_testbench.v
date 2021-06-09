@@ -1,10 +1,10 @@
-module comp_testbench ();
-
-    reg enable,clk,finished,reset;
+module comp_testbench (clk);
+    input clk;
+    reg enable,finished,reset;
     reg [3:0]result;
     reg [15:0]Arr[0:9];
 
-    Comparitor (.Arr(Arr),.clk(clk),.done(finished),.result(result),.enable(enable),.reset(reset));
+    Comparitor compare (.Arr(Arr),.clk(clk),.done(finished),.result(result),.enable(enable),.reset(reset));
 
 initial begin
     Arr[0] = 16'b0000100000000000;
