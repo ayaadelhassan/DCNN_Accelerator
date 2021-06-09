@@ -22,10 +22,10 @@ always @(posedge clk) begin
     if(enable == 1) begin
         if(done == 0) begin
             // Check if the max is arr[i]
-            assign max = ($signed(Arr[i]) > $signed(max))? Arr[i] : max;
-            assign maxIndex = ($signed(Arr[i]) > $signed(max))? i : maxIndex;
+            max <= ($signed(Arr[i]) > $signed(max))? Arr[i] : max;
+            maxIndex <= ($signed(Arr[i]) > $signed(max))? i : maxIndex;
             // prepare to next loop
-            i = i + 1;
+            i <= i + 1;
             // Set the result
             if (i>=9) begin
                 result <= maxIndex;
